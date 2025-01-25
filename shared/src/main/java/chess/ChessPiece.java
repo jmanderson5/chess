@@ -1,7 +1,8 @@
 package chess;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import chess.piece.PieceMovesCalculator;
+
+import java.util.List;
 
 /**
  * Represents a single chess piece
@@ -41,7 +42,7 @@ public class ChessPiece {
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return type;
     }
 
     /**
@@ -51,7 +52,8 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return new ArrayList<>();
+    public List<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        PieceMovesCalculator pieceMoves = new PieceMovesCalculator(board, myPosition);
+        return pieceMoves.getLegalMoves();
     }
 }

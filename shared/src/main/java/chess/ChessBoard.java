@@ -8,7 +8,7 @@ package chess;
  */
 public class ChessBoard {
 
-    private ChessPiece[][] squares = new ChessPiece[8][8];
+    private static final ChessPiece[][] squares = new ChessPiece[8][8];
 
     public ChessBoard() {
         
@@ -31,7 +31,7 @@ public class ChessBoard {
      * @return Either the piece at the position, or null if no piece is at that
      * position
      */
-    public ChessPiece getPiece(ChessPosition position) {
+    public static ChessPiece getPiece(ChessPosition position) {
         return squares[position.getRow()][position.getColumn()];
     }
 
