@@ -5,11 +5,12 @@ import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BishopMovesCalculator {
 
-    private List<ChessMove> legalMoves;
+    private List<ChessMove> legalMoves = new ArrayList<>();
 
     public List<ChessMove> getLegalMoves() {
         return legalMoves;

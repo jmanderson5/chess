@@ -32,7 +32,7 @@ public class PieceMovesCalculator {
     }
 
     private void calculateLegalMoves() {
-        ChessPiece piece = ChessBoard.getPiece(myPosition);
+        ChessPiece piece = board.getPiece(myPosition);
         if (piece.getPieceType() == BISHOP) {
             BishopMovesCalculator bishopMoves = new BishopMovesCalculator(board, myPosition);
             setLegalMoves(bishopMoves.getLegalMoves());
