@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static chess.ChessPiece.PieceType.BISHOP;
+import static chess.ChessPiece.PieceType.KING;
 
 public class PieceMovesCalculator {
 
@@ -54,6 +55,10 @@ public class PieceMovesCalculator {
         if (piece.getPieceType() == BISHOP) {
             BishopMovesCalculator bishopMoves = new BishopMovesCalculator(board, myPosition);
             setLegalMoves(bishopMoves.getLegalMoves());
+        }
+        if (piece.getPieceType() == KING) {
+            KingMovesCalculator kingMoves = new KingMovesCalculator(board, myPosition);
+            setLegalMoves(kingMoves.getLegalMoves());
         }
     }
 
