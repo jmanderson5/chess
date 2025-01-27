@@ -58,6 +58,7 @@ public class PieceMovesCalculator {
     }
 
     public PieceMovesCalculator(ChessBoard board, ChessPosition myPosition) {
+        List<ChessMove> frank;
         setBoard(board);
         setMyPosition(myPosition);
         calculateLegalMoves();

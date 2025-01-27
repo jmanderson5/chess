@@ -42,21 +42,39 @@ public class BishopMovesCalculator {
         int column = myPosition.getColumn();
         int row = myPosition.getRow();
 
+        ChessPiece temp;
+
         // top right
         for (int i = column + 1, j = row + 1; i <= 8 && j <= 8; i++, j++) {
-            legalMoves.add(new ChessMove(new ChessPosition(i, j), myPosition, ChessPiece.PieceType.BISHOP));
+            temp = board.getPiece(new ChessPosition(j, i));
+            if (temp != null) {
+                break;
+            }
+            legalMoves.add(new ChessMove(myPosition, new ChessPosition(j, i), null));
         }
         // top left
-        for (int i = column + 1, j = row - 1; i <= 8 && j >= 0; i++, j--) {
-            legalMoves.add(new ChessMove(new ChessPosition(i, j), myPosition, ChessPiece.PieceType.BISHOP));
+        for (int i = column + 1, j = row - 1; i <= 8 && j > 0; i++, j--) {
+            temp = board.getPiece(new ChessPosition(j, i));
+            if (temp != null) {
+                break;
+            }
+            legalMoves.add(new ChessMove(myPosition, new ChessPosition(j, i), null));
         }
         // bottom right
-        for (int i = column - 1, j = row + 1; i >= 0 && j <= 8; i--, j++) {
-            legalMoves.add(new ChessMove(new ChessPosition(i, j), myPosition, ChessPiece.PieceType.BISHOP));
+        for (int i = column - 1, j = row + 1; i > 0 && j <= 8; i--, j++) {
+            temp = board.getPiece(new ChessPosition(j, i));
+            if (temp != null) {
+                break;
+            }
+            legalMoves.add(new ChessMove(myPosition, new ChessPosition(j, i), null));
         }
         // bottom left
-        for (int i = column - 1, j = row - 1; i >= 0 && j >= 0; i--, j--) {
-            legalMoves.add(new ChessMove(new ChessPosition(i, j), myPosition, ChessPiece.PieceType.BISHOP));
+        for (int i = column - 1, j = row - 1; i > 0 && j > 0; i--, j--) {
+            temp = board.getPiece(new ChessPosition(j, i));
+            if (temp != null) {
+                break;
+            }
+            legalMoves.add(new ChessMove(myPosition, new ChessPosition(j, i), null));
         }
 
         setLegalMoves(legalMoves);
