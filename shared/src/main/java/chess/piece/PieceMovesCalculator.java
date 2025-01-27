@@ -6,6 +6,7 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 
 import java.util.List;
+import java.util.Objects;
 
 import static chess.ChessPiece.PieceType.BISHOP;
 
@@ -29,6 +30,23 @@ public class PieceMovesCalculator {
 
     private void setMyPosition(ChessPosition myPosition) {
         this.myPosition = myPosition;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PieceMovesCalculator that = (PieceMovesCalculator) o;
+        return Objects.equals(legalMoves, that.legalMoves) && Objects.equals(board, that.board) && Objects.equals(myPosition, that.myPosition);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(legalMoves, board, myPosition);
     }
 
     private void calculateLegalMoves() {
