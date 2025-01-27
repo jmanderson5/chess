@@ -1,12 +1,9 @@
 package chess.piece;
 
-import chess.ChessBoard;
-import chess.ChessMove;
-import chess.ChessPosition;
+import chess.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class PawnMovesCalculator {
 
@@ -20,24 +17,93 @@ public class PawnMovesCalculator {
         this.legalMoves = legalMoves;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        PawnMovesCalculator that = (PawnMovesCalculator) o;
-        return Objects.equals(legalMoves, that.legalMoves);
+    private void promotePawn(ChessPosition myPosition, int rowNext, int columnNext) {
+        legalMoves.add(new ChessMove(myPosition, new ChessPosition(rowNext, columnNext), ChessPiece.PieceType.ROOK));
+        legalMoves.add(new ChessMove(myPosition, new ChessPosition(rowNext, columnNext), ChessPiece.PieceType.BISHOP));
+        legalMoves.add(new ChessMove(myPosition, new ChessPosition(rowNext, columnNext), ChessPiece.PieceType.KNIGHT));
+        legalMoves.add(new ChessMove(myPosition, new ChessPosition(rowNext, columnNext), ChessPiece.PieceType.QUEEN));
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(legalMoves);
+    private void pawnMovesModifier(int rowNext, int columnNext, ChessPiece startingPiece, ChessBoard board,
+                                     ChessPosition myPosition, boolean attack) {
+        if (rowNext <= 8 && rowNext >= 1 && columnNext <= 8 && columnNext >= 1){
+            ChessPiece temp = board.getPiece(new ChessPosition(rowNext, columnNext));
+            if (startingPiece.getTeamColor() == ChessGame.TeamColor.BLACK && rowNext == 1) {
+                if (temp == null && !attack) {
+                    promotePawn(myPosition, rowNext, columnNext);
+                } else if (temp != null && temp.getTeamColor() != startingPiece.getTeamColor() && attack) {
+                    promotePawn(myPosition, rowNext, columnNext);
+                }
+            } else if (startingPiece.getTeamColor() == ChessGame.TeamColor.WHITE && rowNext == 8) {
+                if (temp == null && !attack) {
+                    promotePawn(myPosition, rowNext, columnNext);
+                } else if (temp != null && temp.getTeamColor() != startingPiece.getTeamColor() && attack) {
+                    promotePawn(myPosition, rowNext, columnNext);
+                }
+            } else if (temp == null && !attack) {
+                legalMoves.add(new ChessMove(myPosition, new ChessPosition(rowNext, columnNext), null));
+            } else if (temp != null && temp.getTeamColor() != startingPiece.getTeamColor() && attack) {
+                legalMoves.add(new ChessMove(myPosition, new ChessPosition(rowNext, columnNext), null));
+            }
+        }
     }
 
     public PawnMovesCalculator(ChessBoard board, ChessPosition myPosition) {
+        int row = myPosition.getRow();
+        int column = myPosition.getColumn();
+        int rowNext;
+        int columnNext;
 
+        ChessPiece startingPiece = board.getPiece(myPosition);
+
+        // white
+        if (startingPiece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+            // up two
+            if (row == 2) {
+                rowNext = row + 2;
+                columnNext = column;
+                ChessPiece temp = board.getPiece(new ChessPosition(rowNext - 1, columnNext));
+                if (temp == null) {
+                    pawnMovesModifier(rowNext, columnNext, startingPiece, board, myPosition, false);
+                }
+            }
+            // up one
+            rowNext = row + 1;
+            columnNext = column;
+            pawnMovesModifier(rowNext, columnNext, startingPiece, board, myPosition, false);
+            // attack
+            // left
+            columnNext = column - 1;
+            pawnMovesModifier(rowNext, columnNext, startingPiece, board, myPosition, true);
+            // right
+            columnNext = column + 1;
+            pawnMovesModifier(rowNext, columnNext, startingPiece, board, myPosition, true);
+        }
+
+        // black
+        if (startingPiece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+            // down two
+            if (row == 7) {
+                rowNext = row - 2;
+                columnNext = column;
+                ChessPiece temp = board.getPiece(new ChessPosition(rowNext + 1, columnNext));
+                if (temp == null) {
+                    pawnMovesModifier(rowNext, columnNext, startingPiece, board, myPosition, false);
+                }
+            }
+            // down one
+            rowNext = row - 1;
+            columnNext = column;
+            pawnMovesModifier(rowNext, columnNext, startingPiece, board, myPosition, false);
+            // attack
+            // left
+            columnNext = column - 1;
+            pawnMovesModifier(rowNext, columnNext, startingPiece, board, myPosition, true);
+            // right
+            columnNext = column + 1;
+            pawnMovesModifier(rowNext, columnNext, startingPiece, board, myPosition, true);
+        }
+
+        setLegalMoves(legalMoves);
     }
 }
