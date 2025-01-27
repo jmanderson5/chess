@@ -71,6 +71,10 @@ public class PieceMovesCalculator {
             QueenMovesCalculator queenMoves = new QueenMovesCalculator(board, myPosition);
             setLegalMoves(queenMoves.getLegalMoves());
         }
+        if (piece.getPieceType() == ROOK) {
+            RookMovesCalculator rookMoves = new RookMovesCalculator(board, myPosition);
+            setLegalMoves(rookMoves.getLegalMoves());
+        }
     }
 
     public PieceMovesCalculator(ChessBoard board, ChessPosition myPosition) {
