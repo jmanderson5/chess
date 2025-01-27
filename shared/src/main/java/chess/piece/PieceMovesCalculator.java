@@ -67,6 +67,10 @@ public class PieceMovesCalculator {
             PawnMovesCalculator pawnMoves = new PawnMovesCalculator(board, myPosition);
             setLegalMoves(pawnMoves.getLegalMoves());
         }
+        if (piece.getPieceType() == QUEEN) {
+            QueenMovesCalculator queenMoves = new QueenMovesCalculator(board, myPosition);
+            setLegalMoves(queenMoves.getLegalMoves());
+        }
     }
 
     public PieceMovesCalculator(ChessBoard board, ChessPosition myPosition) {
