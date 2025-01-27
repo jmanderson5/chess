@@ -8,8 +8,7 @@ import chess.ChessPosition;
 import java.util.List;
 import java.util.Objects;
 
-import static chess.ChessPiece.PieceType.BISHOP;
-import static chess.ChessPiece.PieceType.KING;
+import static chess.ChessPiece.PieceType.*;
 
 public class PieceMovesCalculator {
 
@@ -59,6 +58,10 @@ public class PieceMovesCalculator {
         if (piece.getPieceType() == KING) {
             KingMovesCalculator kingMoves = new KingMovesCalculator(board, myPosition);
             setLegalMoves(kingMoves.getLegalMoves());
+        }
+        if (piece.getPieceType() == KNIGHT) {
+            KnightMovesCalculator knightMoves = new KnightMovesCalculator(board, myPosition);
+            setLegalMoves(knightMoves.getLegalMoves());
         }
     }
 
