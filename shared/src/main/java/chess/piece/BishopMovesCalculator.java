@@ -43,7 +43,7 @@ public class BishopMovesCalculator {
         int column = myPosition.getColumn();
 
         ChessPiece temp;
-        ChessPiece startingPiece = board.getPiece(new ChessPosition(row, column));
+        ChessPiece startingPiece = board.getPiece(myPosition);
 
         // top right
         for (int i = row + 1, j = column + 1; i <= 8 && j <= 8; i++, j++) {
