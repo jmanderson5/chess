@@ -83,13 +83,11 @@ public class ChessGame {
             capturedPiece = board.getPiece(chessMove.getEndPosition());
             // make move to check validity and add to validMoves
             try {
+                TeamColor ogColor = teamTurn;
+                setTeamTurn(board.getPiece(startPosition).getTeamColor());
                 makeMove(chessMove);
                 // switch back color
-                if (teamTurn == TeamColor.BLACK) {
-                    setTeamTurn(TeamColor.WHITE);
-                } else {
-                    setTeamTurn(TeamColor.BLACK);
-                }
+                setTeamTurn(ogColor);
                 // don't add if in check!
                 if (!isInCheck(teamTurn)) {
                     validMoves.add(chessMove);
