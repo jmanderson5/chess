@@ -228,22 +228,35 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        boolean inStalemate = true;
+        if (isInCheckmate(teamColor)) {
+            inStalemate = false;
+        }
+
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 ChessPosition myPosition = new ChessPosition(i, j);
                 ChessPiece piece = board.getPiece(myPosition);
                 List<ChessMove> chessMoveList;
+                ChessPiece ogPiece, capturedPiece;
 
-                if (piece != null && piece.getTeamColor() != teamColor) {
+                if (piece != null && piece.getTeamColor() == teamColor) {
                     chessMoveList = piece.pieceMoves(board, myPosition);
                     // if there are possible moves to be made return false
-                    if (chessMoveList.size() > 0) {
-                        return false;
+                    for (ChessMove chessMove : chessMoveList) {
+                        ogPiece = board.getPiece(chessMove.getStartPosition());
+                        capturedPiece = board.getPiece(chessMove.getEndPosition());
+                        try {
+                            teamTurn = teamColor;
+                            makeMove(chessMove);
+                            undoMove(chessMove, ogPiece, capturedPiece);
+                            return false;
+                        } catch (InvalidMoveException ignore) {}
                     }
                 }
             }
         }
-        return true;
+        return inStalemate;
     }
 
     /**
