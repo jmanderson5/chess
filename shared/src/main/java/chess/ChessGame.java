@@ -192,31 +192,32 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if (isInCheck(teamColor)) {
-            for (int i = 1; i <= 8; i++) {
-                for (int j = 1; j <= 8; j++) {
-                    ChessPosition myPosition = new ChessPosition(i, j);
-                    ChessPiece piece = board.getPiece(myPosition);
-                    List<ChessMove> chessMoveList;
+        boolean inCheckmate = false;
+        if (!isInCheck(teamColor)) {
+            return false;
+        }
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPosition myPosition = new ChessPosition(i, j);
+                ChessPiece piece = board.getPiece(myPosition);
+                List<ChessMove> chessMoveList;
+                ChessPiece ogPiece, capturedPiece;
 
-                    if (piece != null && piece.getTeamColor() == teamColor) {
-                        chessMoveList = piece.pieceMoves(board, myPosition);
-                        if (chessMoveList.size() >= 0) {
-                            return true;
-                        }
-                        for (ChessMove chessMove : chessMoveList) {
-                            try {
-                                makeMove(chessMove);
-                                return false;
-                            } catch (InvalidMoveException e) {
-                                return true;
-                            }
-                        }
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    chessMoveList = piece.pieceMoves(board, myPosition);
+                    for (ChessMove chessMove : chessMoveList) {
+                        ogPiece = board.getPiece(chessMove.getStartPosition());
+                        capturedPiece = board.getPiece(chessMove.getEndPosition());
+                        try {
+                            makeMove(chessMove);
+                            undoMove(chessMove, ogPiece, capturedPiece);
+                            return false;
+                        } catch (InvalidMoveException e) { inCheckmate = true; }
                     }
                 }
             }
         }
-        return false;
+        return inCheckmate;
     }
 
     /**
