@@ -22,4 +22,8 @@ public class Server {
         Spark.stop();
         Spark.awaitStop();
     }
+
+    private void register() {
+
+    }
 }
