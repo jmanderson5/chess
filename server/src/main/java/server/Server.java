@@ -33,23 +33,17 @@ public class Server {
     }
 
     private Object register(Request req, Response res) throws DataAccessException {
-        String username, authToken;
+        AuthResponse authResponse;
         try {
             UserData user = new Gson().fromJson(req.body(), UserData.class);
-            Register registerService = new Register();
-            UserData newUser = registerService.getUser(user.username());
-            if (newUser != null) {
-                res.status(403);
-                throw new DataAccessException("Error: already taken");
-            }
-            username = registerService.createUser(user);
-            authToken = registerService.createAuth(user.username());
+            Register register = new Register();
+            authResponse = register.runRegister(user);
         } catch (Exception e) {
             res.status(400);
             throw new DataAccessException("Error: bad request");
         }
 
         res.status(200);
-        return new Gson().toJson(new AuthResponse(username, authToken));
+        return new Gson().toJson(authResponse);
     }
 }
