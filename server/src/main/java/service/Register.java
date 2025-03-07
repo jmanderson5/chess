@@ -9,14 +9,8 @@ import model.UserData;
 import java.util.UUID;
 
 public class Register {
-
-    private final UserDAO userDAO;
-    private final AuthDAO authDAO;
-
-    public Register(UserDAO userDAO, AuthDAO authDAO) {
-        this.userDAO = userDAO;
-        this.authDAO = authDAO;
-    }
+    UserDAO userDAO;
+    AuthDAO authDAO;
 
     public UserData getUser(String username) throws DataAccessException {
         return userDAO.getUser(username);
