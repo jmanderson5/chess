@@ -9,7 +9,7 @@ public class SQLUserDAO implements UserDAO {
     }
 
     @Override
-    public void createUser(UserData user) throws DataAccessException {
-        // implement
+    public String createUser(UserData user) throws DataAccessException {
+        return null;
     }
 }

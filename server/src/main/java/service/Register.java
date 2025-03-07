@@ -16,15 +16,17 @@ public class Register {
         return userDAO.getUser(username);
     }
 
-    public void createUser(UserData user) throws DataAccessException {
-        userDAO.createUser(user);
+    public String createUser(UserData user) throws DataAccessException {
+        return userDAO.createUser(user);
     }
 
     public static String generateToken() {
         return UUID.randomUUID().toString();
     }
 
-    public void createAuth(String username) throws DataAccessException {
-        authDAO.createAuth(new AuthData(generateToken(), username));
+    public String createAuth(String username) throws DataAccessException {
+        String authToken = generateToken();
+        authDAO.createAuth(new AuthData(authToken, username));
+        return authToken;
     }
 }
