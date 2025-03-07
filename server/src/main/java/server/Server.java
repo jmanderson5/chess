@@ -50,6 +50,6 @@ public class Server {
         }
 
         res.status(200);
-        return new AuthResponse(username, authToken);
+        return new Gson().toJson(new AuthResponse(username, authToken));
     }
 }
