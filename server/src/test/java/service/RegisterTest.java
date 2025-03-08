@@ -10,14 +10,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class RegisterTest {
     static final Register service = new Register();
-    static final Clear clear = new Clear();
-    UserDAO userDAO;
-    AuthDAO authDAO;
+    UserDAO userDAO = new MemoryUserDAO();
+    AuthDAO authDAO = new MemoryAuthDAO();
 
     @BeforeEach
     void setup() {
-        userDAO = new MemoryUserDAO();
-        authDAO = new MemoryAuthDAO();
+        userDAO.clearUserData();
+        authDAO.clearAuthData();
     }
 
     @Test

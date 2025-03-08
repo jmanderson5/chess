@@ -3,11 +3,8 @@ package service;
 import dataaccess.*;
 
 public class Clear {
-    UserDAO userDAO = new MemoryUserDAO();
-    AuthDAO authDAO = new MemoryAuthDAO();
-    GameDAO gameDAO = new MemoryGameDAO();
 
-    public void runClear() {
+    public void runClear(UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO) {
         userDAO.clearUserData();
         authDAO.clearAuthData();
         gameDAO.clearGameData();
