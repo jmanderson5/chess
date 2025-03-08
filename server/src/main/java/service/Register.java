@@ -8,19 +8,19 @@ import model.UserData;
 import java.util.UUID;
 
 public class Register {
-    UserDAO userDAO = new MemoryUserDAO();
-    AuthDAO authDAO = new MemoryAuthDAO();
+    UserDAO userDAO;
+    AuthDAO authDAO;
 
-    public AuthResponse runRegister(UserData user) throws DataAccessException {
+    public AuthResponse runRegister(UserDAO userDAO, AuthDAO authDAO, UserData user) throws DataAccessException {
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
+
         UserData newUser = userDAO.getUser(user.username());
         if (newUser != null) { throw new DataAccessException("Error: already taken"); }
         String username = createUser(user);
         String authData = createAuth(username);
-        return new AuthResponse(username, authData);
-    }
 
-    private UserData getUser(String username) throws DataAccessException {
-        return userDAO.getUser(username);
+        return new AuthResponse(username, authData);
     }
 
     private String createUser(UserData user) throws DataAccessException {

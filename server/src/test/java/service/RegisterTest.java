@@ -1,6 +1,6 @@
 package service;
 
-import dataaccess.DataAccessException;
+import dataaccess.*;
 import model.AuthResponse;
 import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,16 +10,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class RegisterTest {
     static final Register service = new Register();
+    static final Clear clear = new Clear();
+    UserDAO userDAO;
+    AuthDAO authDAO;
 
-//    @BeforeEach
-//    void clear() throws ResponseException {
-//        service.clear();
-//    }
+    @BeforeEach
+    void setup() {
+        userDAO = new MemoryUserDAO();
+        authDAO = new MemoryAuthDAO();
+    }
 
     @Test
     void runRegisterValid() throws DataAccessException {
+        new Clear();
         UserData user = new UserData("jmander", "happy", "jmander@byu.edu");
-        AuthResponse data = service.runRegister(user);
+        AuthResponse data = service.runRegister(userDAO, authDAO, user);
 
         assertEquals(data.username(), "jmander");
         assertNotNull(data.authToken());
@@ -30,10 +35,10 @@ public class RegisterTest {
     @Test
     void runRegisterInvalid() throws DataAccessException {
         UserData user = new UserData("jmander", "happy", "jmander@byu.edu");
-        service.runRegister(user);
+        service.runRegister(userDAO, authDAO, user);
 
         Exception exception = assertThrows(DataAccessException.class, () -> {
-            service.runRegister(user);
+            service.runRegister(userDAO, authDAO, user);
         });
 
         assertEquals("Error: already taken", exception.getMessage());

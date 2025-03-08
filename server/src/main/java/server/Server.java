@@ -1,7 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
+import dataaccess.*;
 import model.AuthResponse;
 import model.UserData;
 import service.Register;
@@ -34,10 +34,12 @@ public class Server {
 
     private Object register(Request req, Response res) throws DataAccessException {
         AuthResponse authResponse;
+        UserDAO userDAO = new MemoryUserDAO();
+        AuthDAO authDAO = new MemoryAuthDAO();
         try {
             UserData user = new Gson().fromJson(req.body(), UserData.class);
             Register register = new Register();
-            authResponse = register.runRegister(user);
+            authResponse = register.runRegister(userDAO, authDAO, user);
         } catch (Exception e) {
             res.status(400);
             throw new DataAccessException("Error: bad request");
