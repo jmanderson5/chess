@@ -23,6 +23,7 @@ public class RegisterTest {
 
         assertEquals(data.username(), "jmander");
         assertNotNull(data.authToken());
-        assertTrue(data.authToken().matches("[a-zA-Z0-9]{10,}"));
+        assertTrue(data.authToken().matches(
+                "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"));
     }
 }
