@@ -1,8 +1,6 @@
 package service;
 
-import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
-import dataaccess.UserDAO;
+import dataaccess.*;
 import model.AuthData;
 import model.AuthResponse;
 import model.UserData;
@@ -10,8 +8,8 @@ import model.UserData;
 import java.util.UUID;
 
 public class Register {
-    UserDAO userDAO;
-    AuthDAO authDAO;
+    UserDAO userDAO = new MemoryUserDAO();
+    AuthDAO authDAO = new MemoryAuthDAO();
 
     public AuthResponse runRegister(UserData user) throws DataAccessException {
         UserData newUser = userDAO.getUser(user.username());
