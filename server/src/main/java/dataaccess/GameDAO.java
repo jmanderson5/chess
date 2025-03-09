@@ -5,9 +5,9 @@ import model.GameData;
 import java.util.HashMap;
 
 public interface GameDAO {
-    GameData getGame(Integer gameID);
+    GameData getGame(String gameName);
 
-    HashMap<Integer, GameData> getGames();
+    HashMap<String, GameData> getGames();
 
     void createGame(GameData gameData) throws DataAccessException;
 

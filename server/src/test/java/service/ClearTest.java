@@ -41,6 +41,6 @@ public class ClearTest {
 
         assertNull(userDAO.getUser("jmander"));
         assertNull(authDAO.getAuth("1234"));
-        assertNull(gameDAO.getGame(1234));
+        assertNull(gameDAO.getGame("challengers"));
     }
 }

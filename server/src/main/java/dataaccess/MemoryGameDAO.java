@@ -5,21 +5,21 @@ import model.GameData;
 import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO {
-    private HashMap<Integer, GameData> games = new HashMap<>();
+    private HashMap<String, GameData> games = new HashMap<>();
 
     @Override
-    public GameData getGame(Integer gameID) {
-        return games.get(gameID);
+    public GameData getGame(String gameName) {
+        return games.get(gameName);
     }
 
     @Override
-    public HashMap<Integer, GameData> getGames() {
+    public HashMap<String, GameData> getGames() {
         return games;
     }
 
     @Override
     public void createGame(GameData gameData) throws DataAccessException {
-        games.put(gameData.gameID(), gameData);
+        games.put(gameData.gameName(), gameData);
     }
 
     @Override

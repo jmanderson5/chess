@@ -51,6 +51,9 @@ public class Server {
         } else if (message.equals("Error: unauthorized")) {
             res.status(401);
             res.body(new Gson().toJson(message));
+        } else if (message.equals("Error: bad request")) {
+            res.status(400);
+            res.body(new Gson().toJson(message));
         }
     }
 
