@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.*;
 import model.AuthResponse;
 import model.UserData;
+import service.Clear;
 import service.Register;
 import spark.*;
 
@@ -11,6 +12,7 @@ public class Server {
 
     private UserDAO userDAO = new MemoryUserDAO();
     private AuthDAO authDAO = new MemoryAuthDAO();
+    private GameDAO gameDAO = new MemoryGameDAO();
 
     public Server() {
     }
@@ -22,6 +24,7 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);
+        Spark.post("/db", this::clear);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -60,6 +63,9 @@ public class Server {
     }
 
     private Object clear(Request req, Response res) {
-        return null;
+        Clear clear = new Clear(userDAO, authDAO, gameDAO);
+
+        res.status(200);
+        return new Gson().toJson(clear);
     }
 }

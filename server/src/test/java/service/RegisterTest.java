@@ -21,7 +21,6 @@ public class RegisterTest {
 
     @Test
     void runRegisterValid() throws DataAccessException {
-        new Clear();
         UserData user = new UserData("jmander", "happy", "jmander@byu.edu");
         AuthResponse data = service.runRegister(userDAO, authDAO, user);
 

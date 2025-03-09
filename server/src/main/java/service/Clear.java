@@ -4,7 +4,7 @@ import dataaccess.*;
 
 public class Clear {
 
-    public void runClear(UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO) {
+    public Clear(UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO) {
         userDAO.clearUserData();
         authDAO.clearAuthData();
         gameDAO.clearGameData();
