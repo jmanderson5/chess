@@ -3,8 +3,10 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.*;
 import model.AuthResponse;
+import model.LoginData;
 import model.UserData;
 import service.Clear;
+import service.Login;
 import service.Register;
 import spark.*;
 
@@ -54,8 +56,21 @@ public class Server {
             Register register = new Register();
             authResponse = register.runRegister(userDAO, authDAO, user);
         } catch (Exception e) {
-            res.status(400);
             throw new DataAccessException("Error: already taken");
+        }
+
+        res.status(200);
+        return new Gson().toJson(authResponse);
+    }
+
+    private Object login(Request req, Response res) throws DataAccessException {
+        AuthResponse authResponse;
+        try {
+            LoginData user = new Gson().fromJson(req.body(), LoginData.class);
+            Login login = new Login();
+            authResponse = login.runLogin(userDAO, authDAO, user);
+        } catch (Exception e) {
+            throw new DataAccessException("Error: unauthorized");
         }
 
         res.status(200);
