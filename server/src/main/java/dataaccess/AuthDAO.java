@@ -7,5 +7,7 @@ public interface AuthDAO {
 
     void createAuth(AuthData authData) throws DataAccessException;
 
+    void deleteAuth(AuthData authData);
+
     void clearAuthData();
 }
