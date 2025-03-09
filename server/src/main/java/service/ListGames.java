@@ -11,11 +11,11 @@ import java.util.HashMap;
 public class ListGames {
     private AuthDAO authDAO;
 
-    public HashMap<Integer, GameData> runListGames(GameDAO gameDAO, AuthDAO authDAO, AuthData auth)
+    public GameDAO runListGames(GameDAO gameDAO, AuthDAO authDAO, AuthData auth)
             throws DataAccessException {
         this.authDAO = authDAO;
         verifyAuth(auth);
-        return gameDAO.getGames();
+        return gameDAO;
     }
 
     private void verifyAuth(AuthData auth) throws DataAccessException {

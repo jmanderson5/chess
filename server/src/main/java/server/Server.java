@@ -6,10 +6,7 @@ import model.AuthData;
 import model.AuthResponse;
 import model.LoginData;
 import model.UserData;
-import service.Clear;
-import service.Login;
-import service.Logout;
-import service.Register;
+import service.*;
 import spark.*;
 
 public class Server {
@@ -30,6 +27,7 @@ public class Server {
         Spark.post("/user", this::register);
         Spark.post("/session", this::login);
         Spark.delete("/session", this::logout);
+        Spark.get("/game", this::listGames);
         Spark.delete("/db", this::clear);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
 
@@ -95,6 +93,17 @@ public class Server {
 
         res.status(200);
         return new Gson().toJson(auth);
+    }
+
+    private Object listGames(Request req, Response res) throws  DataAccessException {
+        AuthData auth = new Gson().fromJson(req.body(), AuthData.class);
+        ListGames listGames = new ListGames();
+        try {
+            res.status(200);
+            return new Gson().toJson(listGames.runListGames(gameDAO, authDAO, auth));
+        } catch (Exception e) {
+            throw new DataAccessException("Error: unauthorized");
+        }
     }
 
     private Object clear(Request req, Response res) {
