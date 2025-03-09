@@ -8,7 +8,7 @@ public class MemoryUserDAO implements UserDAO {
     private HashMap<String, UserData> users = new HashMap<>();
 
     @Override
-    public UserData getUser(String username) throws DataAccessException {
+    public UserData getUser(String username){
         return users.get(username);
     }
 
