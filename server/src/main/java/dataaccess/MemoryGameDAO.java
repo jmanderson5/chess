@@ -13,6 +13,11 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
+    public HashMap<Integer, GameData> getGames() {
+        return games;
+    }
+
+    @Override
     public void createGame(GameData gameData) throws DataAccessException {
         games.put(gameData.gameID(), gameData);
     }
