@@ -19,14 +19,14 @@ public class Login {
         this.authDAO = authDAO;
 
         UserData loginUser = userDAO.getUser(user.username());
-        if (loginUser == null || loginUser.username().equals(user.username()) ||
-                loginUser.password().equals(user.password())) {
+        if (loginUser == null || !loginUser.username().equals(user.username()) ||
+                !loginUser.password().equals(user.password())) {
             throw new DataAccessException("Error: unauthorized");
         }
 
         String authToken = createAuth(user.username());
 
-        return new AuthResponse(authToken, user.username());
+        return new AuthResponse(user.username(), authToken);
     }
 
     private static String generateToken() {

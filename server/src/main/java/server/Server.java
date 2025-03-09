@@ -27,6 +27,7 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);
         Spark.post("/db", this::clear);
+        Spark.post("/session", this::login);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -45,6 +46,9 @@ public class Server {
         String message = ex.getMessage();
         if (message.equals("Error: already taken")) {
             res.status(403);
+            res.body(new Gson().toJson(message));
+        } else if (message.equals("Error: unauthorized")) {
+            res.status(401);
             res.body(new Gson().toJson(message));
         }
     }
