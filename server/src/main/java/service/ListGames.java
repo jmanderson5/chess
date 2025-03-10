@@ -8,16 +8,16 @@ import model.AuthData;
 public class ListGames {
     private AuthDAO authDAO;
 
-    public GameDAO runListGames(GameDAO gameDAO, AuthDAO authDAO, AuthData auth)
+    public GameDAO runListGames(GameDAO gameDAO, AuthDAO authDAO, String auth)
             throws DataAccessException {
         this.authDAO = authDAO;
         verifyAuth(auth);
         return gameDAO;
     }
 
-    private void verifyAuth(AuthData auth) throws DataAccessException {
-        auth = authDAO.getAuth(auth.authToken());
-        if (auth == null) {
+    private void verifyAuth(String auth) throws DataAccessException {
+        AuthData authData = authDAO.getAuth(auth);
+        if (authData == null) {
             throw new DataAccessException("Error: unauthorized");
         }
     }
