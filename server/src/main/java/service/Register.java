@@ -2,7 +2,7 @@ package service;
 
 import dataaccess.*;
 import model.AuthData;
-import model.AuthResponse;
+import model.handler.AuthResponse;
 import model.UserData;
 
 import java.util.UUID;

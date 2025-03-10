@@ -2,7 +2,7 @@ package service;
 
 import dataaccess.*;
 import model.AuthData;
-import model.GameResult;
+import model.handler.GameResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

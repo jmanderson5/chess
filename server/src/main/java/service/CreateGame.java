@@ -6,7 +6,7 @@ import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import model.AuthData;
 import model.GameData;
-import model.GameResult;
+import model.handler.GameResult;
 
 import java.util.Random;
 

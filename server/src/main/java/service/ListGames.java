@@ -5,7 +5,7 @@ import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import model.AuthData;
 import model.GameData;
-import model.GameDataShort;
+import model.handler.GameDataShort;
 
 import java.util.ArrayList;
 import java.util.HashMap;

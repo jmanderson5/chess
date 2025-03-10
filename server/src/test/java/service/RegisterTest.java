@@ -1,7 +1,7 @@
 package service;
 
 import dataaccess.*;
-import model.AuthResponse;
+import model.handler.AuthResponse;
 import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

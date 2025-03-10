@@ -3,6 +3,9 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.*;
 import model.*;
+import model.handler.AuthResponse;
+import model.handler.GameName;
+import model.handler.LoginData;
 import service.*;
 import spark.*;
 
