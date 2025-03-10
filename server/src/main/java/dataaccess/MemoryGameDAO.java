@@ -13,6 +13,16 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
+    public GameData getGameByID(int gameID) throws DataAccessException {
+        for (GameData game : games.values()) {
+            if (game.gameID() == gameID) {
+                return game;
+            }
+        }
+        throw new DataAccessException("Error: bad request");
+    }
+
+    @Override
     public HashMap<String, GameData> getGames() {
         return games;
     }

@@ -22,7 +22,7 @@ public class LogoutTest {
     void runLogoutValid() throws DataAccessException {
         AuthData auth = new AuthData("1234", "jmander");
         authDAO.createAuth(auth);
-        service.runLogout(authDAO, auth);
+        service.runLogout(authDAO, "1234");
 
         assertNull(authDAO.getAuth("1234"));
     }
@@ -31,11 +31,10 @@ public class LogoutTest {
     void runLoginInvalid() throws DataAccessException {
         AuthData auth = new AuthData("1234", "jmander");
         authDAO.createAuth(auth);
-        AuthData wrongAuth = new AuthData("1234", "jmander");
-        service.runLogout(authDAO, wrongAuth);
+        service.runLogout(authDAO, "1234");
 
         Exception exception = assertThrows(DataAccessException.class, () -> {
-            service.runLogout(authDAO, auth);
+            service.runLogout(authDAO, "1234");
         });
 
         assertEquals("Error: unauthorized", exception.getMessage());

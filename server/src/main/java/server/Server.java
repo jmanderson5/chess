@@ -3,9 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.*;
 import model.*;
-import model.handler.AuthResponse;
-import model.handler.GameName;
-import model.handler.LoginData;
+import model.handler.*;
 import service.*;
 import spark.*;
 
@@ -29,6 +27,7 @@ public class Server {
         Spark.delete("/session", this::logout);
         Spark.get("/game", this::listGames);
         Spark.post("/game", this::createGame);
+        Spark.put("/game", this::joinGame);
         Spark.delete("/db", this::clear);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
 
@@ -87,7 +86,7 @@ public class Server {
     }
 
     private Object logout(Request req, Response res) throws DataAccessException {
-        AuthData auth = new Gson().fromJson(req.body(), AuthData.class);
+        String auth = req.headers("authorization");
         Logout logout = new Logout();
         try {
             logout.runLogout(authDAO, auth);
@@ -96,7 +95,7 @@ public class Server {
         }
 
         res.status(200);
-        return new Gson().toJson(auth);
+        return new Gson().toJson(new NullResponse());
     }
 
     private Object listGames(Request req, Response res) throws  DataAccessException {
@@ -118,10 +117,19 @@ public class Server {
         return new Gson().toJson(createGame.runCreateGame(authDAO, gameDAO, auth, name.gameName()));
     }
 
+    private Object joinGame(Request req, Response res) throws  DataAccessException {
+        String auth = req.headers("authorization");
+        JoinGameData info = new Gson().fromJson(req.body(), JoinGameData.class);
+        JoinGame joinGame = new JoinGame();
+        joinGame.runJoinGame(authDAO, gameDAO, auth, info.playerColor(), info.gameID());
+        res.status(200);
+        return new Gson().toJson(new NullResponse());
+    }
+
     private Object clear(Request req, Response res) {
-        Clear clear = new Clear(userDAO, authDAO, gameDAO);
+        new Clear(userDAO, authDAO, gameDAO);
 
         res.status(200);
-        return new Gson().toJson(clear);
+        return new Gson().toJson(new NullResponse());
     }
 }
