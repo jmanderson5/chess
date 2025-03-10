@@ -2,10 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.*;
-import model.AuthData;
-import model.AuthResponse;
-import model.LoginData;
-import model.UserData;
+import model.*;
 import service.*;
 import spark.*;
 
@@ -28,6 +25,7 @@ public class Server {
         Spark.post("/session", this::login);
         Spark.delete("/session", this::logout);
         Spark.get("/game", this::listGames);
+        Spark.post("/game", this::createGame);
         Spark.delete("/db", this::clear);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
 
@@ -110,9 +108,11 @@ public class Server {
     }
 
     private Object createGame(Request req, Response res) throws  DataAccessException {
-        
-
-        return null;
+        String auth = req.headers("authorization");
+        GameName name = new Gson().fromJson(req.body(), GameName.class);
+        CreateGame createGame = new CreateGame();
+        res.status(200);
+        return new Gson().toJson(createGame.runCreateGame(authDAO, gameDAO, auth, name.gameName()));
     }
 
     private Object clear(Request req, Response res) {

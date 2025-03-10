@@ -24,7 +24,7 @@ public class CreateGameTest {
         AuthData auth = new AuthData("1234", "jmander");
         authDAO.createAuth(auth);
         String gameName = "awesome sauce";
-        GameResult result = service.runCreateGame(authDAO, gameDAO, auth, gameName);
+        GameResult result = service.runCreateGame(authDAO, gameDAO, "1234", gameName);
 
         assertTrue(result.gameID() >= 1000 && result.gameID() <= 9999);
         assertEquals("awesome sauce", gameDAO.getGame(gameName).gameName());
@@ -37,10 +37,10 @@ public class CreateGameTest {
         AuthData auth = new AuthData("1234", "jmander");
         authDAO.createAuth(auth);
         String gameName = "awesome sauce";
-        service.runCreateGame(authDAO, gameDAO, auth, gameName);
+        service.runCreateGame(authDAO, gameDAO, "1234", gameName);
 
         Exception exception = assertThrows(DataAccessException.class, () -> {
-            service.runCreateGame(authDAO, gameDAO, auth, gameName);
+            service.runCreateGame(authDAO, gameDAO, "1234", gameName);
         });
 
         assertEquals("Error: bad request", exception.getMessage());
@@ -52,7 +52,7 @@ public class CreateGameTest {
         String gameName = "awesome sauce";
 
         Exception exception = assertThrows(DataAccessException.class, () -> {
-            service.runCreateGame(authDAO, gameDAO, auth, gameName);
+            service.runCreateGame(authDAO, gameDAO, "1234", gameName);
         });
 
         assertEquals("Error: unauthorized", exception.getMessage());

@@ -14,7 +14,7 @@ public class CreateGame {
     AuthDAO authDAO;
     GameDAO gameDAO;
 
-    public GameResult runCreateGame(AuthDAO authDAO, GameDAO gameDAO, AuthData auth,
+    public GameResult runCreateGame(AuthDAO authDAO, GameDAO gameDAO, String auth,
                                     String gameName) throws DataAccessException {
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;
@@ -24,9 +24,9 @@ public class CreateGame {
         return createGame(gameName);
     }
 
-    private void verifyAuth(AuthData auth) throws DataAccessException {
-        auth = authDAO.getAuth(auth.authToken());
-        if (auth == null) {
+    private void verifyAuth(String auth) throws DataAccessException {
+        AuthData authData = authDAO.getAuth(auth);
+        if (authData == null) {
             throw new DataAccessException("Error: unauthorized");
         }
     }
