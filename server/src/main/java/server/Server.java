@@ -46,26 +46,25 @@ public class Server {
     private void exceptionHandler(DataAccessException ex, Request req, Response res) {
         String message = ex.getMessage();
         if (message.equals("Error: already taken")) {
-            res.status(403);
-            res.body(new Gson().toJson(message));
+            setRes(res,403, message);
         } else if (message.equals("Error: unauthorized")) {
-            res.status(401);
-            res.body(new Gson().toJson(message));
+            setRes(res,401, message);
         } else if (message.equals("Error: bad request")) {
-            res.status(400);
-            res.body(new Gson().toJson(message));
+            setRes(res,400, message);
         }
+    }
+
+    private void setRes(Response res, int statusCode, String message) {
+        res.status(statusCode);
+        ErrorResponse error = new ErrorResponse(message);
+        res.body(new Gson().toJson(error));
     }
 
     private Object register(Request req, Response res) throws DataAccessException {
         AuthResponse authResponse;
-        try {
-            UserData user = new Gson().fromJson(req.body(), UserData.class);
-            Register register = new Register();
-            authResponse = register.runRegister(userDAO, authDAO, user);
-        } catch (Exception e) {
-            throw new DataAccessException("Error: already taken");
-        }
+        UserData user = new Gson().fromJson(req.body(), UserData.class);
+        Register register = new Register();
+        authResponse = register.runRegister(userDAO, authDAO, user);
 
         res.status(200);
         return new Gson().toJson(authResponse);

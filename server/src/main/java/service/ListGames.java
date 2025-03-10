@@ -6,6 +6,7 @@ import dataaccess.GameDAO;
 import model.AuthData;
 import model.GameData;
 import model.handler.GameDataShort;
+import model.handler.Games;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,14 +17,14 @@ public class ListGames {
     private GameDAO gameDAO;
     private final List<GameDataShort> gamesList = new ArrayList<>();
 
-    public List<GameDataShort> runListGames(GameDAO gameDAO, AuthDAO authDAO, String auth)
+    public Games runListGames(GameDAO gameDAO, AuthDAO authDAO, String auth)
             throws DataAccessException {
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;
         verifyAuth(auth);
         createGamesList();
 
-        return gamesList;
+        return new Games(gamesList);
     }
 
     private void verifyAuth(String auth) throws DataAccessException {

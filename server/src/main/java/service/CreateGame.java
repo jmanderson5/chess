@@ -41,7 +41,7 @@ public class CreateGame {
     private GameResult createGame(String gameName) throws DataAccessException {
         Random random = new Random();
         int gameID = 1000 + random.nextInt(9000);
-        GameData game = new GameData(gameID, "", "", gameName, new ChessGame());
+        GameData game = new GameData(gameID, null, null, gameName, new ChessGame());
         gameDAO.createGame(game);
 
         return new GameResult(game.gameID());

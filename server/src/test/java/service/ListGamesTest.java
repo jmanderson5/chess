@@ -5,6 +5,7 @@ import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import model.handler.GameDataShort;
+import model.handler.Games;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,11 +31,12 @@ public class ListGamesTest {
         authDAO.createAuth(new AuthData("1234", "jmander"));
         gameDAO.createGame(new GameData(2345, "", "",
                 "compitition", new ChessGame()));
-        List<GameDataShort> gamesList = service.runListGames(gameDAO, authDAO, "1234");
+        Games gamesList = service.runListGames(gameDAO, authDAO, "1234");
         List<GameDataShort> listExample = new ArrayList<>();
         listExample.add(new GameDataShort(2345, "", "", "compitition"));
+        Games gamesExample = new Games(listExample);
 
-        assertEquals(listExample, gamesList);
+        assertEquals(gamesExample, gamesList);
     }
 
     @Test

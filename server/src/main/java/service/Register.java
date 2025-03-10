@@ -17,6 +17,10 @@ public class Register {
 
         UserData newUser = userDAO.getUser(user.username());
         if (newUser != null) { throw new DataAccessException("Error: already taken"); }
+        if (user.username() == null || user.password() == null || user.email() == null ||
+                user.username().isEmpty() || user.password().isEmpty() || user.email().isEmpty()) {
+            throw new DataAccessException("Error: bad request");
+        }
         String username = createUser(user);
         String authData = createAuth(username);
 

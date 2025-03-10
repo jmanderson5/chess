@@ -28,8 +28,8 @@ public class CreateGameTest {
 
         assertTrue(result.gameID() >= 1000 && result.gameID() <= 9999);
         assertEquals("awesome sauce", gameDAO.getGame(gameName).gameName());
-        assertEquals("", gameDAO.getGame(gameName).whiteUsername());
-        assertEquals("", gameDAO.getGame(gameName).blackUsername());
+        assertEquals(null, gameDAO.getGame(gameName).whiteUsername());
+        assertEquals(null, gameDAO.getGame(gameName).blackUsername());
     }
 
     @Test

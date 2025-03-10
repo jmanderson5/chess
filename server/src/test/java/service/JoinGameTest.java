@@ -25,10 +25,10 @@ public class JoinGameTest {
     void joinGameValid() throws DataAccessException {
         ChessGame game = new ChessGame();
         authDAO.createAuth(new AuthData("1234", "jmander"));
-        gameDAO.createGame(new GameData(1234, "", "",
+        gameDAO.createGame(new GameData(1234, null, null,
                 "gameName", game));
         service.runJoinGame(authDAO, gameDAO, "1234", "WHITE", 1234);
-        GameData referenceGame = new GameData(1234, "jmander", "",
+        GameData referenceGame = new GameData(1234, "jmander", null,
                 "gameName", game);
 
         assertEquals(referenceGame, gameDAO.getGameByID(1234));
