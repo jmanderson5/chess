@@ -47,8 +47,7 @@ public class CreateGameTest {
     }
 
     @Test
-    void notAuthorized() throws DataAccessException {
-        AuthData auth = new AuthData("1234", "jmander");
+    void notAuthorized() {
         String gameName = "awesome sauce";
 
         Exception exception = assertThrows(DataAccessException.class, () -> {
