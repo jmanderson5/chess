@@ -209,29 +209,29 @@ public class ChessGame {
                 ChessPosition myPosition = new ChessPosition(i, j);
                 ChessPiece piece = board.getPiece(myPosition);
 
-                inCheckmate = checkmate(piece, myPosition, teamColor);
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    if (!checkmate(piece, myPosition)) { return false; }
+                }
             }
         }
-        return inCheckmate;
+        return true;
     }
 
-    private boolean checkmate(ChessPiece piece, ChessPosition myPosition, TeamColor teamColor) {
+    private boolean checkmate(ChessPiece piece, ChessPosition myPosition) {
         List<ChessMove> chessMoveList;
         ChessPiece ogPiece, capturedPiece;
+        chessMoveList = piece.pieceMoves(board, myPosition);
 
-        if (piece != null && piece.getTeamColor() == teamColor) {
-            chessMoveList = piece.pieceMoves(board, myPosition);
-            for (ChessMove chessMove : chessMoveList) {
-                ogPiece = board.getPiece(chessMove.getStartPosition());
-                capturedPiece = board.getPiece(chessMove.getEndPosition());
-                try {
-                    makeMove(chessMove);
-                    undoMove(chessMove, ogPiece, capturedPiece);
-                    return false;
-                } catch (InvalidMoveException e) { return true; }
-            }
+        for (ChessMove chessMove : chessMoveList) {
+            ogPiece = board.getPiece(chessMove.getStartPosition());
+            capturedPiece = board.getPiece(chessMove.getEndPosition());
+            try {
+                makeMove(chessMove);
+                undoMove(chessMove, ogPiece, capturedPiece);
+                return false;
+            } catch (InvalidMoveException ignore) {}
         }
-        return false;
+        return true;
     }
 
     /**
@@ -242,23 +242,23 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        boolean inStalemate = true;
-        if (isInCheckmate(teamColor)) {
-            inStalemate = false;
-        }
+        boolean inStalemate = !isInCheckmate(teamColor);
 
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 ChessPosition myPosition = new ChessPosition(i, j);
                 ChessPiece piece = board.getPiece(myPosition);
+                List<ChessMove> chessMoveList;
+                ChessPiece ogPiece, capturedPiece;
 
-                inStalemate = stalemate(piece, teamColor, myPosition);
+                inStalemate = stalemate(piece, teamColor, myPosition, inStalemate);
+                if (!inStalemate) { return false; }
             }
         }
         return inStalemate;
     }
 
-    private boolean stalemate(ChessPiece piece, TeamColor teamColor, ChessPosition myPosition) {
+    private boolean stalemate(ChessPiece piece, TeamColor teamColor, ChessPosition myPosition, boolean inStalemate) {
         List<ChessMove> chessMoveList;
         ChessPiece ogPiece, capturedPiece;
 
@@ -276,7 +276,7 @@ public class ChessGame {
                 } catch (InvalidMoveException ignore) {}
             }
         }
-        return true;
+        return inStalemate;
     }
 
     /**
