@@ -44,50 +44,27 @@ public class BishopMovesCalculator {
 
         ChessPiece temp;
         ChessPiece startingPiece = board.getPiece(myPosition);
+        RookMovesCalculator calculator = new RookMovesCalculator(board, myPosition);
 
         // top right
         for (int i = row + 1, j = column + 1; i <= 8 && j <= 8; i++, j++) {
             temp = board.getPiece(new ChessPosition(i, j));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) {
-                break;
-            }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            if (temp != null) {
-                break;
-            }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j)) { break; }
         }
         // top left
         for (int i = row + 1, j = column - 1; i <= 8 && j > 0; i++, j--) {
             temp = board.getPiece(new ChessPosition(i, j));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) {
-                break;
-            }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            if (temp != null) {
-                break;
-            }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j)) { break; }
         }
         // bottom right
         for (int i = row - 1, j = column + 1; i > 0 && j <= 8; i--, j++) {
             temp = board.getPiece(new ChessPosition(i, j));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) {
-                break;
-            }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            if (temp != null) {
-                break;
-            }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j)) { break; }
         }
         // bottom left
         for (int i = row - 1, j = column - 1; i > 0 && j > 0; i--, j--) {
             temp = board.getPiece(new ChessPosition(i, j));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) {
-                break;
-            }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            if (temp != null) {
-                break;
-            }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j)) { break; }
         }
 
         setLegalMoves(legalMoves);
