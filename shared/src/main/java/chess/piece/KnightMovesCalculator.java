@@ -20,7 +20,7 @@ public class KnightMovesCalculator {
         this.legalMoves = legalMoves;
     }
 
-    private void knightMovesModifier(int rowNext, int columnNext, ChessPiece startingPiece, ChessBoard board,
+    public void movesModifier(int rowNext, int columnNext, ChessPiece startingPiece, ChessBoard board,
                                    ChessPosition myPosition) {
         if (rowNext <= 8 && rowNext >= 1 && columnNext <= 8 && columnNext >= 1){
             ChessPiece temp = board.getPiece(new ChessPosition(rowNext, columnNext));
@@ -44,36 +44,36 @@ public class KnightMovesCalculator {
         // right
         rowNext = row + 2;
         columnNext = column + 1;
-        knightMovesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
         // left
         columnNext = column - 1;
-        knightMovesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
 
         // right
         // up
         columnNext = column + 2;
         rowNext = row + 1;
-        knightMovesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
         // down
         rowNext = row - 1;
-        knightMovesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
 
         // left
         // up
         columnNext = column - 2;
         rowNext = row + 1;
-        knightMovesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
         // down
         rowNext = row - 1;
-        knightMovesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
 
         // down
         // right
         rowNext = row - 2;
         columnNext = column + 1;
-        knightMovesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
         columnNext = column - 1;
-        knightMovesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
 
 
         setLegalMoves(legalMoves);
