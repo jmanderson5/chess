@@ -20,18 +20,6 @@ public class KnightMovesCalculator {
         this.legalMoves = legalMoves;
     }
 
-    public void movesModifier(int rowNext, int columnNext, ChessPiece startingPiece, ChessBoard board,
-                                   ChessPosition myPosition) {
-        if (rowNext <= 8 && rowNext >= 1 && columnNext <= 8 && columnNext >= 1){
-            ChessPiece temp = board.getPiece(new ChessPosition(rowNext, columnNext));
-            if (temp == null) {
-                legalMoves.add(new ChessMove(myPosition, new ChessPosition(rowNext, columnNext), null));
-            } else if (temp.getTeamColor() != startingPiece.getTeamColor()) {
-                legalMoves.add(new ChessMove(myPosition, new ChessPosition(rowNext, columnNext), null));
-            }
-        }
-    }
-
     public KnightMovesCalculator(ChessBoard board, ChessPosition myPosition) {
         int row = myPosition.getRow();
         int column = myPosition.getColumn();
@@ -39,41 +27,42 @@ public class KnightMovesCalculator {
         int columnNext;
 
         ChessPiece startingPiece = board.getPiece(myPosition);
+        AdjustmentCalculator calculator = new AdjustmentCalculator();
 
         // top
         // right
         rowNext = row + 2;
         columnNext = column + 1;
-        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        calculator.movesModifier(rowNext, columnNext, startingPiece, board, myPosition, legalMoves);
         // left
         columnNext = column - 1;
-        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        calculator.movesModifier(rowNext, columnNext, startingPiece, board, myPosition, legalMoves);
 
         // right
         // up
         columnNext = column + 2;
         rowNext = row + 1;
-        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        calculator.movesModifier(rowNext, columnNext, startingPiece, board, myPosition, legalMoves);
         // down
         rowNext = row - 1;
-        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        calculator.movesModifier(rowNext, columnNext, startingPiece, board, myPosition, legalMoves);
 
         // left
         // up
         columnNext = column - 2;
         rowNext = row + 1;
-        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        calculator.movesModifier(rowNext, columnNext, startingPiece, board, myPosition, legalMoves);
         // down
         rowNext = row - 1;
-        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        calculator.movesModifier(rowNext, columnNext, startingPiece, board, myPosition, legalMoves);
 
         // down
         // right
         rowNext = row - 2;
         columnNext = column + 1;
-        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        calculator.movesModifier(rowNext, columnNext, startingPiece, board, myPosition, legalMoves);
         columnNext = column - 1;
-        movesModifier(rowNext, columnNext, startingPiece, board, myPosition);
+        calculator.movesModifier(rowNext, columnNext, startingPiece, board, myPosition, legalMoves);
 
 
         setLegalMoves(legalMoves);

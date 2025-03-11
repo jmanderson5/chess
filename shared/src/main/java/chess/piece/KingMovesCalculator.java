@@ -11,12 +11,12 @@ import java.util.Objects;
 
 public class KingMovesCalculator {
 
-    private List<ChessMove> moves = new ArrayList<>();
+    private List<ChessMove> legalMoves = new ArrayList<>();
     public List<ChessMove> getLegalMoves() {
-        return moves;
+        return legalMoves;
     }
     public void setLegalMoves(List<ChessMove> legalMoves) {
-        this.moves = legalMoves;
+        this.legalMoves = legalMoves;
     }
 
     @Override
@@ -28,12 +28,12 @@ public class KingMovesCalculator {
             return false;
         }
         KingMovesCalculator that = (KingMovesCalculator) o;
-        return Objects.equals(moves, that.moves);
+        return Objects.equals(legalMoves, that.legalMoves);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(moves);
+        return Objects.hashCode(legalMoves);
     }
 
     public KingMovesCalculator(ChessBoard board, ChessPosition myPosition) {
@@ -41,25 +41,25 @@ public class KingMovesCalculator {
         int column = myPosition.getColumn();
 
         ChessPiece startingPiece = board.getPiece(myPosition);
-        KnightMovesCalculator calculator = new KnightMovesCalculator(board, myPosition);
+        AdjustmentCalculator calculator = new AdjustmentCalculator();
 
         // up one
-        calculator.movesModifier(row + 1, column, startingPiece, board, myPosition);
+        calculator.movesModifier(row + 1, column, startingPiece, board, myPosition, legalMoves);
         // topRight
-        calculator.movesModifier(row + 1, column + 1, startingPiece, board, myPosition);
+        calculator.movesModifier(row + 1, column + 1, startingPiece, board, myPosition, legalMoves);
         // topLeft
-        calculator.movesModifier(row + 1, column - 1, startingPiece, board, myPosition);
+        calculator.movesModifier(row + 1, column - 1, startingPiece, board, myPosition, legalMoves);
         // left
-        calculator.movesModifier(row, column - 1, startingPiece, board, myPosition);
+        calculator.movesModifier(row, column - 1, startingPiece, board, myPosition, legalMoves);
         // right
-        calculator.movesModifier(row, column + 1, startingPiece, board, myPosition);
+        calculator.movesModifier(row, column + 1, startingPiece, board, myPosition, legalMoves);
         // down one
-        calculator.movesModifier(row - 1, column, startingPiece, board, myPosition);
+        calculator.movesModifier(row - 1, column, startingPiece, board, myPosition, legalMoves);
         // bottomRight
-        calculator.movesModifier(row - 1, column + 1, startingPiece, board, myPosition);
+        calculator.movesModifier(row - 1, column + 1, startingPiece, board, myPosition, legalMoves);
         // bottomLeft
-        calculator.movesModifier(row - 1, column - 1, startingPiece, board, myPosition);
+        calculator.movesModifier(row - 1, column - 1, startingPiece, board, myPosition, legalMoves);
 
-        setLegalMoves(moves);
+        setLegalMoves(legalMoves);
     }
 }

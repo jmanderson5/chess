@@ -20,6 +20,7 @@ public class BishopMovesCalculator {
     public void setLegalMoves(List<ChessMove> legalMoves) {
         this.legalMoves = legalMoves;
     }
+    AdjustmentCalculator calculator = new AdjustmentCalculator();
 
     @Override
     public boolean equals(Object o) {
@@ -44,27 +45,26 @@ public class BishopMovesCalculator {
 
         ChessPiece temp;
         ChessPiece startingPiece = board.getPiece(myPosition);
-        RookMovesCalculator calculator = new RookMovesCalculator(board, myPosition);
 
         // top right
         for (int i = row + 1, j = column + 1; i <= 8 && j <= 8; i++, j++) {
             temp = board.getPiece(new ChessPosition(i, j));
-            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j)) { break; }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j, legalMoves)) { break; }
         }
         // top left
         for (int i = row + 1, j = column - 1; i <= 8 && j > 0; i++, j--) {
             temp = board.getPiece(new ChessPosition(i, j));
-            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j)) { break; }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j, legalMoves)) { break; }
         }
         // bottom right
         for (int i = row - 1, j = column + 1; i > 0 && j <= 8; i--, j++) {
             temp = board.getPiece(new ChessPosition(i, j));
-            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j)) { break; }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j, legalMoves)) { break; }
         }
         // bottom left
         for (int i = row - 1, j = column - 1; i > 0 && j > 0; i--, j--) {
             temp = board.getPiece(new ChessPosition(i, j));
-            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j)) { break; }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j, legalMoves)) { break; }
         }
 
         setLegalMoves(legalMoves);
