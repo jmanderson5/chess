@@ -11,14 +11,12 @@ import java.util.Objects;
 
 public class KingMovesCalculator {
 
-    private List<ChessMove> legalMoves = new ArrayList<>();
-
+    private List<ChessMove> moves = new ArrayList<>();
     public List<ChessMove> getLegalMoves() {
-        return legalMoves;
+        return moves;
     }
-
     public void setLegalMoves(List<ChessMove> legalMoves) {
-        this.legalMoves = legalMoves;
+        this.moves = legalMoves;
     }
 
     @Override
@@ -30,12 +28,12 @@ public class KingMovesCalculator {
             return false;
         }
         KingMovesCalculator that = (KingMovesCalculator) o;
-        return Objects.equals(legalMoves, that.legalMoves);
+        return Objects.equals(moves, that.moves);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(legalMoves);
+        return Objects.hashCode(moves);
     }
 
     public KingMovesCalculator(ChessBoard board, ChessPosition myPosition) {
@@ -62,6 +60,6 @@ public class KingMovesCalculator {
         // bottomLeft
         calculator.movesModifier(row - 1, column - 1, startingPiece, board, myPosition);
 
-        setLegalMoves(legalMoves);
+        setLegalMoves(moves);
     }
 }
