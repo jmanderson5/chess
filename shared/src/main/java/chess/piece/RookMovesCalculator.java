@@ -50,7 +50,7 @@ public class RookMovesCalculator {
         setLegalMoves(legalMoves);
     }
 
-    private boolean adjustPosition(ChessPiece temp, ChessPiece startingPiece, ChessPosition myPosition, int row, int col) {
+    public boolean adjustPosition(ChessPiece temp, ChessPiece startingPiece, ChessPosition myPosition, int row, int col) {
         if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) { return true; }
         legalMoves.add(new ChessMove(myPosition, new ChessPosition(row, col), null));
         return temp != null;

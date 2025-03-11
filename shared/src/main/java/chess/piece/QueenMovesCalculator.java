@@ -25,62 +25,47 @@ public class QueenMovesCalculator {
         int column = myPosition.getColumn();
 
         ChessPiece startingPiece = board.getPiece(myPosition);
+        RookMovesCalculator calculator = new RookMovesCalculator(board, myPosition);
 
         // up
         for (int i = row + 1; i <= 8; i++) {
             ChessPiece temp = board.getPiece(new ChessPosition(i, column));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) { break; }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(i, column), null));
-            if (temp != null) { break; }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, column)) { break; }
         }
         // top right
         for (int i = row + 1, j = column + 1; i <= 8 && j <= 8; i++, j++) {
             ChessPiece temp = board.getPiece(new ChessPosition(i, j));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) { break; }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            if (temp != null) { break; }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j)) { break; }
         }
         // right
         for (int j = column + 1; j <= 8; j++) {
             ChessPiece temp = board.getPiece(new ChessPosition(row, j));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) { break; }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(row, j), null));
-            if (temp != null) { break; }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, row, j)) { break; }
         }
         // bottom right
         for (int i = row - 1, j = column + 1; i >= 1 && j <= 8; i--, j++) {
             ChessPiece temp = board.getPiece(new ChessPosition(i, j));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) { break; }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            if (temp != null) { break; }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j)) { break; }
         }
         // down
         for (int i = row - 1; i >= 1; i--) {
             ChessPiece temp = board.getPiece(new ChessPosition(i, column));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) { break; }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(i, column), null));
-            if (temp != null) { break; }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, column)) { break; }
         }
         // bottom left
         for (int i = row - 1, j = column - 1; i >= 1 && j >= 1; i--, j--) {
             ChessPiece temp = board.getPiece(new ChessPosition(i, j));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) { break; }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            if (temp != null) { break; }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j)) { break; }
         }
         // left
         for (int j = column - 1; j >= 1; j--) {
             ChessPiece temp = board.getPiece(new ChessPosition(row, j));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) { break; }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(row, j), null));
-            if (temp != null) { break; }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, row, j)) { break; }
         }
         // top left
         for (int i = row + 1, j = column - 1; i <= 8 && j >= 1; i++, j--) {
             ChessPiece temp = board.getPiece(new ChessPosition(i, j));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) { break; }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
-            if (temp != null) { break; }
+            if (calculator.adjustPosition(temp, startingPiece, myPosition, i, j)) { break; }
         }
 
         setLegalMoves(legalMoves);
