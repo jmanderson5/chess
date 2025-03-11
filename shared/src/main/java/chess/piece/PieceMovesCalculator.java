@@ -77,12 +77,6 @@ public class PieceMovesCalculator {
         }
     }
 
-    public boolean adjustPosition(ChessPiece temp, ChessPiece startingPiece, ChessPosition myPosition, int row, int col) {
-        if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) { return true; }
-        legalMoves.add(new ChessMove(myPosition, new ChessPosition(row, col), null));
-        return temp != null;
-    }
-
     public PieceMovesCalculator(ChessBoard board, ChessPosition myPosition) {
         setBoard(board);
         setMyPosition(myPosition);
