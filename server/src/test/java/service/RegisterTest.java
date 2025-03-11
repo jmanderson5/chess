@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RegisterTest {
-    static final Register service = new Register();
     UserDAO userDAO = new MemoryUserDAO();
     AuthDAO authDAO = new MemoryAuthDAO();
+    Register service = new Register();
 
     @BeforeEach
     void setup() {

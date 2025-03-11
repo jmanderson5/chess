@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LogoutTest {
-    static final Logout service = new Logout();
     UserDAO userDAO = new MemoryUserDAO();
     AuthDAO authDAO = new MemoryAuthDAO();
+    Logout service = new Logout();
 
     @BeforeEach
     void setup() {
