@@ -28,13 +28,8 @@ public class PawnMovesCalculator {
                                      ChessPosition myPosition, boolean attack) {
         if (rowNext <= 8 && rowNext >= 1 && columnNext <= 8 && columnNext >= 1){
             ChessPiece temp = board.getPiece(new ChessPosition(rowNext, columnNext));
-            if (startingPiece.getTeamColor() == ChessGame.TeamColor.BLACK && rowNext == 1) {
-                if (temp == null && !attack) {
-                    promotePawn(myPosition, rowNext, columnNext);
-                } else if (temp != null && temp.getTeamColor() != startingPiece.getTeamColor() && attack) {
-                    promotePawn(myPosition, rowNext, columnNext);
-                }
-            } else if (startingPiece.getTeamColor() == ChessGame.TeamColor.WHITE && rowNext == 8) {
+            if (startingPiece.getTeamColor() == ChessGame.TeamColor.BLACK && rowNext == 1 ||
+                    startingPiece.getTeamColor() == ChessGame.TeamColor.WHITE && rowNext == 8) {
                 if (temp == null && !attack) {
                     promotePawn(myPosition, rowNext, columnNext);
                 } else if (temp != null && temp.getTeamColor() != startingPiece.getTeamColor() && attack) {

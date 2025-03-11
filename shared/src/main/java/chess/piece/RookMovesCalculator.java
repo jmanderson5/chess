@@ -29,32 +29,30 @@ public class RookMovesCalculator {
         // up
         for (int i = row + 1; i <= 8; i++) {
             ChessPiece temp = board.getPiece(new ChessPosition(i, column));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) { break; }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(i, column), null));
-            if (temp != null) { break; }
+            if (adjustPosition(temp, startingPiece, myPosition, i, column)) { break; }
         }
         // right
         for (int j = column + 1; j <= 8; j++) {
             ChessPiece temp = board.getPiece(new ChessPosition(row, j));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) { break; }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(row, j), null));
-            if (temp != null) { break; }
+            if (adjustPosition(temp, startingPiece, myPosition, row, j)) { break; }
         }
         // down
         for (int i = row - 1; i >= 1; i--) {
             ChessPiece temp = board.getPiece(new ChessPosition(i, column));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) { break; }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(i, column), null));
-            if (temp != null) { break; }
+            if (adjustPosition(temp, startingPiece, myPosition, i, column)) { break; }
         }
         // left
         for (int j = column - 1; j >= 1; j--) {
             ChessPiece temp = board.getPiece(new ChessPosition(row, j));
-            if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) { break; }
-            legalMoves.add(new ChessMove(myPosition, new ChessPosition(row, j), null));
-            if (temp != null) { break; }
+            if (adjustPosition(temp, startingPiece, myPosition, row, j)) { break; }
         }
 
         setLegalMoves(legalMoves);
+    }
+
+    private boolean adjustPosition(ChessPiece temp, ChessPiece startingPiece, ChessPosition myPosition, int row, int col) {
+        if (temp != null && temp.getTeamColor() == startingPiece.getTeamColor()) { return true; }
+        legalMoves.add(new ChessMove(myPosition, new ChessPosition(row, col), null));
+        return temp != null;
     }
 }
