@@ -51,6 +51,8 @@ public class Server {
             setRes(res,401, message);
         } else if (message.equals("Error: bad request")) {
             setRes(res,400, message);
+        } else {
+            res.status(500);
         }
     }
 
