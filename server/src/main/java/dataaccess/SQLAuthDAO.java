@@ -38,12 +38,14 @@ public class SQLAuthDAO implements AuthDAO {
     public void createAuth(AuthData authData) throws DataAccessException {
         String statement = "INSERT INTO authData (authToken, username) VALUES (?, ?)";
         var json = new Gson().toJson(authData);
-        executeUpdate(statement, authData.authToken(), authData.username(), json);
+        executeUpdate(statement, authData.authToken(), authData.username());
     }
 
     @Override
-    public void deleteAuth(AuthData authData) {
-
+    public void deleteAuth(AuthData authData) throws DataAccessException {
+        String authToken = authData.authToken();
+        String statement = "DELETE FROM pet WHERE authToken=?";
+        executeUpdate(statement, authToken);
     }
 
     @Override
@@ -59,23 +61,17 @@ public class SQLAuthDAO implements AuthDAO {
         return authData.setAuth(authToken);
     }
 
-    private int executeUpdate(String statement, Object... params) throws DataAccessException {
+    private void executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length - 1; i++) {
+                for (var i = 0; i < params.length; i++) {
                     var param = params[i];
+                    System.out.println(param);
                     if (param instanceof String p) ps.setString(i + 1, p);
                     else if (param instanceof Integer p) ps.setInt(i + 1, p);
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
                 ps.executeUpdate();
-
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-
-                return 0;
             }
         } catch (SQLException e) {
             throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
