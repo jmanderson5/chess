@@ -1,6 +1,5 @@
 package dataaccess;
 
-import com.google.gson.Gson;
 import model.AuthData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,11 +9,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-public class AuthTest {
+public class AuthDAOTest {
 
     private AuthDAO authDAO = new SQLAuthDAO();
 
-    public AuthTest() throws DataAccessException {
+    public AuthDAOTest() throws DataAccessException {
     }
 
     @BeforeEach

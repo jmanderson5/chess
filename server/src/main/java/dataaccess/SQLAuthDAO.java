@@ -44,7 +44,7 @@ public class SQLAuthDAO implements AuthDAO {
     @Override
     public void deleteAuth(AuthData authData) throws DataAccessException {
         String authToken = authData.authToken();
-        String statement = "DELETE FROM pet WHERE authToken=?";
+        String statement = "DELETE FROM authData WHERE authToken=?";
         executeUpdate(statement, authToken);
     }
 
