@@ -36,7 +36,9 @@ public class SQLAuthDAO implements AuthDAO {
 
     @Override
     public void createAuth(AuthData authData) throws DataAccessException {
-
+        String statement = "INSERT INTO authData (authToken, username) VALUES (?, ?)";
+        var json = new Gson().toJson(authData);
+        executeUpdate(statement, authData.authToken(), authData.username(), json);
     }
 
     @Override
@@ -46,7 +48,7 @@ public class SQLAuthDAO implements AuthDAO {
 
     @Override
     public void clearAuthData() throws DataAccessException {
-        String statement = "TRUNCATE pet";
+        String statement = "TRUNCATE authData";
         executeUpdate(statement);
     }
 
@@ -60,7 +62,7 @@ public class SQLAuthDAO implements AuthDAO {
     private int executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
+                for (var i = 0; i < params.length - 1; i++) {
                     var param = params[i];
                     if (param instanceof String p) ps.setString(i + 1, p);
                     else if (param instanceof Integer p) ps.setInt(i + 1, p);
@@ -86,9 +88,7 @@ public class SQLAuthDAO implements AuthDAO {
               `authToken` varchar(256) NOT NULL,
               `username` varchar(256) NOT NULL,
               `json` TEXT DEFAULT NULL,
-              PRIMARY KEY (`authToken`),
-              INDEX(type),
-              INDEX(name)
+              PRIMARY KEY (`authToken`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
