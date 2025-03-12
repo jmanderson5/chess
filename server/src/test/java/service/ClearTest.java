@@ -16,14 +16,14 @@ public class ClearTest {
     GameDAO gameDAO = new MemoryGameDAO();
 
     @BeforeEach
-    void setup() {
+    void setup() throws DataAccessException {
         userDAO.clearUserData();
         authDAO.clearAuthData();
         gameDAO.clearGameData();
     }
 
     @Test
-    void clearTest() {
+    void clearTest() throws DataAccessException {
         UserData user = new UserData("jmander", "happy", "jmander@byu.edu");
         AuthData auth = new AuthData("1234", "jmander");
         GameData game = new GameData(1234, "jmander", "bob",

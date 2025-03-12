@@ -127,7 +127,7 @@ public class Server {
         return new Gson().toJson(new NullResponse());
     }
 
-    private Object clear(Request req, Response res) {
+    private Object clear(Request req, Response res) throws DataAccessException {
         new Clear(userDAO, authDAO, gameDAO);
 
         res.status(200);

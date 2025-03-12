@@ -9,5 +9,5 @@ public interface AuthDAO {
 
     void deleteAuth(AuthData authData);
 
-    void clearAuthData();
+    void clearAuthData() throws DataAccessException;
 }
