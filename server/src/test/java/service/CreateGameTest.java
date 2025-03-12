@@ -14,7 +14,7 @@ public class CreateGameTest {
     CreateGame service = new CreateGame();
 
     @BeforeEach
-    void setup() {
+    void setup() throws DataAccessException {
         authDAO.clearAuthData();
         gameDAO.clearGameData();
     }

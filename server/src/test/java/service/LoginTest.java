@@ -15,7 +15,7 @@ public class LoginTest {
     Login service = new Login();
 
     @BeforeEach
-    void setup() {
+    void setup() throws DataAccessException {
         userDAO.clearUserData();
         authDAO.clearAuthData();
     }

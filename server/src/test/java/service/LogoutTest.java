@@ -13,7 +13,7 @@ public class LogoutTest {
     Logout service = new Logout();
 
     @BeforeEach
-    void setup() {
+    void setup() throws DataAccessException {
         userDAO.clearUserData();
         authDAO.clearAuthData();
     }

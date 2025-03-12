@@ -14,7 +14,7 @@ public class RegisterTest {
     Register service = new Register();
 
     @BeforeEach
-    void setup() {
+    void setup() throws DataAccessException {
         userDAO.clearUserData();
         authDAO.clearAuthData();
     }
