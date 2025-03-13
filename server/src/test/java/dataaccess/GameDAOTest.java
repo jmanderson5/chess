@@ -27,4 +27,12 @@ public class GameDAOTest {
         gameDAO.createGame(gameData);
         assertDoesNotThrow(() -> gameDAO.getGameByID(gameData.gameID()));
     }
+
+    @Test
+    void getGameIDTest() throws DataAccessException {
+        GameData gameData = new GameData(0, null, null, "gameName",
+                new ChessGame());
+        gameDAO.createGame(gameData);
+        assertDoesNotThrow(() -> gameDAO.getGame(gameData.gameName()));
+    }
  }
