@@ -7,10 +7,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
-
 public class SQLAuthDAO implements AuthDAO {
+    SQLFunctions calculator = new SQLFunctions();
 
     public SQLAuthDAO() throws DataAccessException {
         configureDatabase();
@@ -38,20 +36,20 @@ public class SQLAuthDAO implements AuthDAO {
     public void createAuth(AuthData authData) throws DataAccessException {
         String statement = "INSERT INTO authData (authToken, username) VALUES (?, ?)";
         var json = new Gson().toJson(authData);
-        executeUpdate(statement, authData.authToken(), authData.username());
+        calculator.executeUpdate(statement, authData.authToken(), authData.username());
     }
 
     @Override
     public void deleteAuth(AuthData authData) throws DataAccessException {
         String authToken = authData.authToken();
         String statement = "DELETE FROM authData WHERE authToken=?";
-        executeUpdate(statement, authToken);
+        calculator.executeUpdate(statement, authToken);
     }
 
     @Override
     public void clearAuthData() throws DataAccessException {
         String statement = "TRUNCATE authData";
-        executeUpdate(statement);
+        calculator.executeUpdate(statement);
     }
 
     private AuthData readAuthData(ResultSet rs) throws SQLException {
@@ -59,23 +57,6 @@ public class SQLAuthDAO implements AuthDAO {
         var json = rs.getString("json");
         AuthData authData = new Gson().fromJson(json, AuthData.class);
         return authData.setAuth(authToken);
-    }
-
-    private void executeUpdate(String statement, Object... params) throws DataAccessException {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    System.out.println(param);
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
-        }
     }
 
     private final String[] createStatements = {
