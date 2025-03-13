@@ -26,7 +26,7 @@ public class JoinGame {
 
     private void joinGame(String username, String playerColor, int gameID) throws DataAccessException {
         GameData game = gameDAO.getGameByID(gameID);
-        if (playerColor == null) { throw new DataAccessException("Error: bad request"); }
+        if (playerColor == null || game == null) { throw new DataAccessException("Error: bad request"); }
         if (playerColor.equals("WHITE")) {
             if (game.whiteUsername() != null) {
                 throw new DataAccessException("Error: already taken");

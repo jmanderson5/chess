@@ -34,7 +34,7 @@ public class JoinGameTest {
         GameData referenceGame = new GameData(1234, "jmander", null,
                 "gameName", game);
 
-        assertEquals(referenceGame, gameDAO.getGameByID(1234));
+        assertEquals(referenceGame, gameDAO.getGame("gameName"));
     }
 
     @Test
