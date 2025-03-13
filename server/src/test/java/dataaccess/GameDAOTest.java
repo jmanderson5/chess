@@ -24,7 +24,7 @@ public class GameDAOTest {
 
     @Test
     void getGameTest() throws DataAccessException {
-        GameData gameData = new GameData(0, null, null, "gameName",
+        GameData gameData = new GameData(1, null, null, "gameName",
                 new ChessGame());
         gameDAO.createGame(gameData);
 
@@ -33,7 +33,7 @@ public class GameDAOTest {
 
     @Test
     void getGameIDTest() throws DataAccessException {
-        GameData gameData = new GameData(0, null, null, "gameName",
+        GameData gameData = new GameData(1, null, null, "gameName",
                 new ChessGame());
         gameDAO.createGame(gameData);
 
@@ -42,7 +42,7 @@ public class GameDAOTest {
 
     @Test
     void getGamesTest() throws DataAccessException {
-        GameData gameData = new GameData(0, null, null, "gameName",
+        GameData gameData = new GameData(1, null, null, "gameName",
                 new ChessGame());
         gameDAO.createGame(gameData);
 
@@ -50,19 +50,21 @@ public class GameDAOTest {
     }
 
     @Test
-    void createGameTest() {
-        GameData gameData = new GameData(0, null, null, "gameName",
+    void createGameTest() throws DataAccessException {
+        GameData gameData = new GameData(1, "jmander", null, "gameName",
                 new ChessGame());
 
         assertDoesNotThrow(() -> gameDAO.createGame(gameData));
+        assertEquals(gameData, gameDAO.getGame("gameName"));
+        assertEquals(gameData, gameDAO.getGameByID(1));
     }
 
     @Test
     void updateGameTest() throws DataAccessException {
-        GameData gameData = new GameData(0, null, null, "gameName",
+        GameData gameData = new GameData(1, null, null, "gameName",
                 new ChessGame());
         gameDAO.createGame(gameData);
-        GameData newGameData = new GameData(0, "jmander", null,
+        GameData newGameData = new GameData(1, "jmander", null,
                 "gameName", gameData.game());
 
         assertDoesNotThrow(() -> gameDAO.updateGame(newGameData, "whiteUsername"));

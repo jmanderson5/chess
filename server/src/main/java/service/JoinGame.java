@@ -5,8 +5,8 @@ import model.AuthData;
 import model.GameData;
 
 public class JoinGame {
-    AuthDAO authDAO = new MemoryAuthDAO();
-    GameDAO gameDAO = new MemoryGameDAO();
+    AuthDAO authDAO;
+    GameDAO gameDAO;
 
     public void runJoinGame(AuthDAO authDAO, GameDAO gameDAO, String auth, String playerColor,
                             int gameID) throws DataAccessException {

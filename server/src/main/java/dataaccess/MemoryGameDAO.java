@@ -7,6 +7,9 @@ import java.util.HashMap;
 public class MemoryGameDAO implements GameDAO {
     private HashMap<String, GameData> games = new HashMap<>();
 
+    public MemoryGameDAO() throws DataAccessException {
+    }
+
     @Override
     public GameData getGame(String gameName) {
         return games.get(gameName);
