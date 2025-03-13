@@ -1,12 +1,14 @@
 package dataaccess;
 
 import chess.ChessGame;
-import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GameDAOTest {
 
@@ -25,6 +27,7 @@ public class GameDAOTest {
         GameData gameData = new GameData(0, null, null, "gameName",
                 new ChessGame());
         gameDAO.createGame(gameData);
+
         assertDoesNotThrow(() -> gameDAO.getGameByID(gameData.gameID()));
     }
 
@@ -33,6 +36,7 @@ public class GameDAOTest {
         GameData gameData = new GameData(0, null, null, "gameName",
                 new ChessGame());
         gameDAO.createGame(gameData);
+
         assertDoesNotThrow(() -> gameDAO.getGame(gameData.gameName()));
     }
 
@@ -41,6 +45,37 @@ public class GameDAOTest {
         GameData gameData = new GameData(0, null, null, "gameName",
                 new ChessGame());
         gameDAO.createGame(gameData);
+
         assertDoesNotThrow(() -> gameDAO.getGames());
+    }
+
+    @Test
+    void createGameTest() {
+        GameData gameData = new GameData(0, null, null, "gameName",
+                new ChessGame());
+
+        assertDoesNotThrow(() -> gameDAO.createGame(gameData));
+    }
+
+    @Test
+    void updateGameTest() throws DataAccessException {
+        GameData gameData = new GameData(0, null, null, "gameName",
+                new ChessGame());
+        gameDAO.createGame(gameData);
+        GameData newGameData = new GameData(0, "jmander", null,
+                "gameName", gameData.game());
+
+        assertDoesNotThrow(() -> gameDAO.updateGame(newGameData, "whiteUsername"));
+    }
+
+    @Test
+    void clearGameDataTest() throws DataAccessException {
+        GameData gameData = new GameData(0, null, null, "gameName",
+                new ChessGame());
+        gameDAO.createGame(gameData);
+        HashMap<String, GameData> expected = new HashMap<>();
+
+        assertDoesNotThrow(() -> gameDAO.clearGameData());
+        assertEquals(expected, gameDAO.getGames());
     }
  }
