@@ -10,6 +10,8 @@ public class SQLFunctions {
     public void executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+//                var dropTable = conn.prepareStatement("DROP TABLE gameData");
+//                dropTable.executeUpdate();
                 for (int i = 0; i < params.length; i++) {
                     var param = params[i];
                     if (param instanceof String p) { ps.setString(i + 1, p); }

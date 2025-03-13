@@ -14,7 +14,7 @@ public class SQLGameDAO implements GameDAO {
     public SQLGameDAO() throws DataAccessException {
         String[] createStatements = {
                 """
-            CREATE TABLE IF NOT EXISTS  gameData (
+            CREATE TABLE IF NOT EXISTS gameData (
               `gameID` int NOT NULL AUTO_INCREMENT,
               `whiteUsername` varchar(256),
               `blackUsername` varchar(256),
@@ -72,10 +72,10 @@ public class SQLGameDAO implements GameDAO {
     }
 
     private GameData readGameDataID(ResultSet rs) throws SQLException {
-        String gameID = rs.getString("gameID");
+        Integer gameID = rs.getInt("gameID");
         var json = rs.getString("json");
         GameData gameData = new Gson().fromJson(json, GameData.class);
-        return gameData.setGame(gameID);
+        return gameData.setGameID(gameID);
     }
 
     @Override
@@ -109,5 +109,18 @@ public class SQLGameDAO implements GameDAO {
     public void clearGameData() throws DataAccessException {
         String statement = "TRUNCATE gameData";
         calculator.executeUpdate(statement);
+    }
+
+    @Override
+    public void updateGame(GameData gameData, String userColor) throws DataAccessException {
+        if (userColor.equals("whiteUsername")) {
+            String statement = "UPDATE gameData SET whiteUsername = '" + gameData.whiteUsername() +
+                    "' WHERE gameID = " + gameData.gameID();
+            calculator.executeUpdate(statement);
+        } else {
+            String statement = "UPDATE gameData SET blackUsername = '" + gameData.blackUsername() +
+                    "' WHERE gameID = " + gameData.gameID();
+            calculator.executeUpdate(statement);
+        }
     }
 }

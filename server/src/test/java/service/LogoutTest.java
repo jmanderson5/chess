@@ -8,9 +8,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LogoutTest {
-    UserDAO userDAO = new MemoryUserDAO();
-    AuthDAO authDAO = new MemoryAuthDAO();
+    UserDAO userDAO = new SQLUserDAO();
+    AuthDAO authDAO = new SQLAuthDAO();
     Logout service = new Logout();
+
+    public LogoutTest() throws DataAccessException {
+    }
 
     @BeforeEach
     void setup() throws DataAccessException {

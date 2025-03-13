@@ -36,4 +36,9 @@ public class MemoryGameDAO implements GameDAO {
     public void clearGameData() {
         games = new HashMap<>();
     }
+
+    @Override
+    public void updateGame(GameData gameData, String userColor) throws DataAccessException {
+        createGame(gameData);
+    }
 }

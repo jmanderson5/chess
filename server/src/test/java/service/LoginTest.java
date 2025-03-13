@@ -10,9 +10,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LoginTest {
-    UserDAO userDAO = new MemoryUserDAO();
-    AuthDAO authDAO = new MemoryAuthDAO();
+    UserDAO userDAO = new SQLUserDAO();
+    AuthDAO authDAO = new SQLAuthDAO();
     Login service = new Login();
+
+    public LoginTest() throws DataAccessException {
+    }
 
     @BeforeEach
     void setup() throws DataAccessException {

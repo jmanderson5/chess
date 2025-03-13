@@ -31,12 +31,14 @@ public class JoinGame {
             if (game.whiteUsername() != null) {
                 throw new DataAccessException("Error: already taken");
             }
-            gameDAO.createGame(new GameData(gameID, username, game.blackUsername(), game.gameName(), game.game()));
+            gameDAO.updateGame(new GameData(gameID, username, game.blackUsername(), game.gameName(), game.game()),
+                    "whiteUsername");
         } else if (playerColor.equals("BLACK")) {
             if (game.blackUsername() != null) {
                 throw new DataAccessException("Error: already taken");
             }
-            gameDAO.createGame(new GameData(gameID, game.whiteUsername(), username, game.gameName(), game.game()));
+            gameDAO.updateGame(new GameData(gameID, game.whiteUsername(), username, game.gameName(), game.game()),
+                    "blackUsername");
         } else {
             throw new DataAccessException("Error: bad request");
         }
