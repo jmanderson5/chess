@@ -1,9 +1,5 @@
 package dataaccess;
 
-import com.google.gson.Gson;
-import model.AuthData;
-
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
