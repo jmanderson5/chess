@@ -32,7 +32,7 @@ public class SQLAuthDAO implements AuthDAO {
                 ps.setString(1, authToken);
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        return calculator.readAuthData(rs);
+                        return readAuthData(rs);
                     }
                 }
             }
@@ -42,11 +42,18 @@ public class SQLAuthDAO implements AuthDAO {
         return null;
     }
 
+    private AuthData readAuthData(ResultSet rs) throws SQLException {
+        String authToken = rs.getString("authToken");
+        var json = rs.getString("json");
+        AuthData authData = new Gson().fromJson(json, AuthData.class);
+        return authData.setAuth(authToken);
+    }
+
     @Override
     public void createAuth(AuthData authData) throws DataAccessException {
-        String statement = "INSERT INTO authData (authToken, username) VALUES (?, ?)";
+        String statement = "INSERT INTO authData (authToken, username, json) VALUES (?, ?, ?)";
         var json = new Gson().toJson(authData);
-        calculator.executeUpdate(statement, authData.authToken(), authData.username());
+        calculator.executeUpdate(statement, authData.authToken(), authData.username(), json);
     }
 
     @Override

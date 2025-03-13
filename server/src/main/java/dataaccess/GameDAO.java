@@ -5,7 +5,7 @@ import model.GameData;
 import java.util.HashMap;
 
 public interface GameDAO {
-    GameData getGame(String gameName);
+    GameData getGame(String gameName) throws DataAccessException;
 
     GameData getGameByID(int gameID) throws DataAccessException;
 

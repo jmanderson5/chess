@@ -22,6 +22,13 @@ public class AuthDAOTest {
     }
 
     @Test
+    void getAuthTest() throws DataAccessException {
+        AuthData authData = new AuthData("1234", "jmander");
+        authDAO.createAuth(authData);
+        assertDoesNotThrow(() -> authDAO.getAuth(authData.username()));
+    }
+
+    @Test
     void createAuthTest() {
         AuthData authData = new AuthData("1234", "jmander");
         assertDoesNotThrow(() -> authDAO.createAuth(authData));

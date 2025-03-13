@@ -39,11 +39,4 @@ public class SQLFunctions {
             throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
         }
     }
-
-    public AuthData readAuthData(ResultSet rs) throws SQLException {
-        String authToken = rs.getString("authToken");
-        var json = rs.getString("json");
-        AuthData authData = new Gson().fromJson(json, AuthData.class);
-        return authData.setAuth(authToken);
-    }
 }
