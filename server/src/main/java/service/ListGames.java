@@ -34,7 +34,7 @@ public class ListGames {
         }
     }
 
-    private void createGamesList() {
+    private void createGamesList() throws DataAccessException {
         HashMap<String, GameData> games = gameDAO.getGames();
 
         for (GameData value : games.values()) {

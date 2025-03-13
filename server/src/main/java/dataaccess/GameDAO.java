@@ -9,9 +9,9 @@ public interface GameDAO {
 
     GameData getGameByID(int gameID) throws DataAccessException;
 
-    HashMap<String, GameData> getGames();
+    HashMap<String, GameData> getGames() throws DataAccessException;
 
     void createGame(GameData gameData) throws DataAccessException;
 
-    void clearGameData();
+    void clearGameData() throws DataAccessException;
 }
