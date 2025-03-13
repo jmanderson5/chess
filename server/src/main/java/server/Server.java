@@ -9,11 +9,16 @@ import spark.*;
 
 public class Server {
 
-    private UserDAO userDAO = new MemoryUserDAO();
-    private AuthDAO authDAO = new MemoryAuthDAO();
-    private GameDAO gameDAO = new MemoryGameDAO();
+    private UserDAO userDAO;
+    private AuthDAO authDAO;
+    private GameDAO gameDAO;
 
     public Server() {
+        try {
+            this.userDAO = new SQLUserDAO();
+            this.authDAO = new SQLAuthDAO();
+            this.gameDAO = new SQLGameDAO();
+        } catch (DataAccessException ignore) {}
     }
 
     public int run(int desiredPort) {
