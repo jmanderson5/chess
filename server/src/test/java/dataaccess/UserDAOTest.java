@@ -1,7 +1,12 @@
 package dataaccess;
 
+import chess.ChessGame;
+import model.GameData;
+import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class UserDAOTest {
 
@@ -16,7 +21,9 @@ public class UserDAOTest {
     }
 
     @Test
-    void getUserTest() {
-
+    void getUserTest() throws DataAccessException {
+        UserData userData = new UserData("jmander", "password", "jmander@byu.edu");
+        userDAO.createUser(userData);
+        assertDoesNotThrow(() -> userDAO.getUser(userData.username()));
     }
 }
