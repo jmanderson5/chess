@@ -11,14 +11,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JoinGameTest {
-    private AuthDAO authDAO = new MemoryAuthDAO();
-    private GameDAO gameDAO = new MemoryGameDAO();
+    private AuthDAO authDAO = new SQLAuthDAO();
+    private GameDAO gameDAO = new SQLGameDAO();
     private JoinGame service = new JoinGame();
 
+    public JoinGameTest() throws DataAccessException {
+    }
+
     @BeforeEach
-    void setup() {
-        authDAO = new MemoryAuthDAO();
-        gameDAO = new MemoryGameDAO();
+    void setup() throws DataAccessException {
+        authDAO.clearAuthData();
+        gameDAO.clearGameData();
     }
 
     @Test

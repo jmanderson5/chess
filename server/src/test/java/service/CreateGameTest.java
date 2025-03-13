@@ -9,9 +9,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CreateGameTest {
-    AuthDAO authDAO = new MemoryAuthDAO();
-    GameDAO gameDAO = new MemoryGameDAO();
+    AuthDAO authDAO = new SQLAuthDAO();
+    GameDAO gameDAO = new SQLGameDAO();
     CreateGame service = new CreateGame();
+
+    public CreateGameTest() throws DataAccessException {
+    }
 
     @BeforeEach
     void setup() throws DataAccessException {
