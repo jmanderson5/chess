@@ -79,13 +79,9 @@ public class Server {
 
     private Object login(Request req, Response res) throws DataAccessException {
         AuthResponse authResponse;
-        try {
-            LoginData user = new Gson().fromJson(req.body(), LoginData.class);
-            Login login = new Login();
-            authResponse = login.runLogin(userDAO, authDAO, user);
-        } catch (Exception e) {
-            throw new DataAccessException("Error: unauthorized");
-        }
+        LoginData user = new Gson().fromJson(req.body(), LoginData.class);
+        Login login = new Login();
+        authResponse = login.runLogin(userDAO, authDAO, user);
 
         res.status(200);
         return new Gson().toJson(authResponse);
@@ -94,11 +90,7 @@ public class Server {
     private Object logout(Request req, Response res) throws DataAccessException {
         String auth = req.headers("authorization");
         Logout logout = new Logout();
-        try {
-            logout.runLogout(authDAO, auth);
-        } catch (Exception e) {
-            throw new DataAccessException("Error: unauthorized");
-        }
+        logout.runLogout(authDAO, auth);
 
         res.status(200);
         return new Gson().toJson(new NullResponse());

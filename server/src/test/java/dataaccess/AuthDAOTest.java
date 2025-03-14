@@ -51,4 +51,11 @@ public class AuthDAOTest {
 
         assertDoesNotThrow(() -> authDAO.deleteAuth(deleteAuth));
     }
+
+    @Test
+    void clearAuthTest() throws DataAccessException {
+        authDAO.createAuth(new AuthData("1", "sally"));
+
+        assertDoesNotThrow(() -> authDAO.clearAuthData());
+    }
 }
