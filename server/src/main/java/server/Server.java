@@ -107,12 +107,8 @@ public class Server {
     private Object listGames(Request req, Response res) throws  DataAccessException {
         String auth = req.headers("authorization");
         ListGames listGames = new ListGames();
-        try {
-            res.status(200);
-            return new Gson().toJson(listGames.runListGames(gameDAO, authDAO, auth));
-        } catch (Exception e) {
-            throw new DataAccessException("Error: unauthorized");
-        }
+        res.status(200);
+        return new Gson().toJson(listGames.runListGames(gameDAO, authDAO, auth));
     }
 
     private Object createGame(Request req, Response res) throws  DataAccessException {

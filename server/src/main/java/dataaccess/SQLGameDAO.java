@@ -87,7 +87,7 @@ public class SQLGameDAO implements GameDAO {
     public HashMap<String, GameData> getGames() throws DataAccessException {
         HashMap<String, GameData> result = new HashMap<>();
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "SELECT gameID, whiteUsername, blackUsername, json FROM gameData";
+            String statement = "SELECT gameID, whiteUsername, blackUsername, gameName, json FROM gameData";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {
