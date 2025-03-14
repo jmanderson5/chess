@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GameDAOTest {
 
@@ -32,8 +31,13 @@ public class GameDAOTest {
     }
 
     @Test
-    void getGameFail() {
+    void getGameFail() throws DataAccessException {
+        GameData gameData = new GameData(1, null, null, "gameName",
+                new ChessGame());
+        gameDAO.createGame(gameData);
+        GameData newGame = gameDAO.getGame("smith");
 
+        assertNotEquals(gameData, newGame);
     }
 
     @Test
@@ -46,12 +50,32 @@ public class GameDAOTest {
     }
 
     @Test
+    void getGameIDFail() throws DataAccessException {
+        GameData gameData = new GameData(1, null, null, "gameName",
+                new ChessGame());
+        gameDAO.createGame(gameData);
+        GameData newGame = gameDAO.getGameByID(2);
+
+        assertNotEquals(gameData, newGame);
+    }
+
+    @Test
     void getGamesTest() throws DataAccessException {
         GameData gameData = new GameData(1, null, null, "gameName",
                 new ChessGame());
         gameDAO.createGame(gameData);
 
         assertDoesNotThrow(() -> gameDAO.getGames());
+    }
+
+    @Test
+    void getGamesFail() throws DataAccessException {
+        HashMap<String, GameData> games = new HashMap<>();
+        GameData gameData = new GameData(1, null, null, "gameName",
+                new ChessGame());
+        games.put(gameData.gameName(), gameData);
+
+        assertNotEquals(games, gameDAO.getGames());
     }
 
     @Test
@@ -65,6 +89,18 @@ public class GameDAOTest {
     }
 
     @Test
+    void createGameFail() throws DataAccessException {
+        GameData gameData = new GameData(1, "jmander", null, "gameName",
+                new ChessGame());
+        GameData wrongGame = new GameData(2, "jmander", null, "wrongGame",
+                new ChessGame());
+
+        assertDoesNotThrow(() -> gameDAO.createGame(wrongGame));
+        assertNotEquals(gameData, gameDAO.getGame("wrongGame"));
+        assertNotEquals(gameData, gameDAO.getGameByID(2));
+    }
+
+    @Test
     void updateGameTest() throws DataAccessException {
         GameData gameData = new GameData(1, null, null, "gameName",
                 new ChessGame());
@@ -73,6 +109,17 @@ public class GameDAOTest {
                 "gameName", gameData.game());
 
         assertDoesNotThrow(() -> gameDAO.updateGame(newGameData, "whiteUsername"));
+    }
+
+    @Test
+    void updateGameFail() throws DataAccessException {
+        GameData gameData = new GameData(1, null, null, "gameName",
+                new ChessGame());
+        gameDAO.createGame(gameData);
+        GameData newGameData = new GameData(1, "jmander", null,
+                "gameName", gameData.game());
+
+        assertThrows(DataAccessException.class, () -> gameDAO.updateGame(newGameData, "bill cosby"));
     }
 
     @Test

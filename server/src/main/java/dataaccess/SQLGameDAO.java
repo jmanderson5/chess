@@ -122,10 +122,12 @@ public class SQLGameDAO implements GameDAO {
             String statement = "UPDATE gameData SET whiteUsername = '" + gameData.whiteUsername() +
                     "' WHERE gameID = " + gameData.gameID();
             calculator.executeUpdate(statement);
-        } else {
+        } else if (userColor.equals("blackUsername")) {
             String statement = "UPDATE gameData SET blackUsername = '" + gameData.blackUsername() +
                     "' WHERE gameID = " + gameData.gameID();
             calculator.executeUpdate(statement);
+        } else {
+            throw new DataAccessException("Error: bad request");
         }
 
         String statementJson = "UPDATE gameData SET json = '" + new Gson().toJson(gameData) +
