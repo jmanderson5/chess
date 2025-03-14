@@ -39,7 +39,7 @@ public class SQLAuthDAO implements AuthDAO {
         } catch (Exception e) {
             throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
         }
-        throw new DataAccessException("Error: bad request");
+        return null;
     }
 
     private AuthData readAuthData(ResultSet rs) throws SQLException {

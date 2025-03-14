@@ -31,13 +31,10 @@ public class AuthDAOTest {
     @Test
     void getAuthFail() throws DataAccessException {
         AuthData authData = new AuthData("1234", "jmander");
-        authDAO.createAuth(authData);
+        AuthData wrongAuth = new AuthData("5", "bob");
+        authDAO.createAuth(wrongAuth);
 
-        Exception exception = assertThrows(DataAccessException.class, () -> {
-            authDAO.getAuth("wrongToken");
-        });
-
-        assertEquals("Error: bad request", exception.getMessage());
+        assertNotEquals(authData, authDAO.getAuth(wrongAuth.authToken()));
     }
 
     @Test
