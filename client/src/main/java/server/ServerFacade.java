@@ -2,16 +2,11 @@ package server;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
 import exception.ResponseException;
 import model.UserData;
 import model.handler.AuthResponse;
 import model.handler.GameResult;
 import model.handler.Games;
-import service.ListGames;
-import service.Register;
-import spark.Request;
-import spark.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,14 +24,14 @@ public class ServerFacade {
         this.serverUrl = url;
     }
 
-    public Object register(Request req, Response res) throws ResponseException {
+    public Object register(UserData user) throws ResponseException {
         var path = "/user";
-        return this.makeRequest("POST", path, null, AuthResponse.class);
+        return this.makeRequest("POST", path, user, AuthResponse.class);
     }
 
-    public Object login() throws ResponseException {
+    public Object login(UserData user) throws ResponseException {
         var path = "/session";
-        return this.makeRequest("POST", path, null, AuthResponse.class);
+        return this.makeRequest("POST", path, user, AuthResponse.class);
     }
 
     public void logout() throws ResponseException {
