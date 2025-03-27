@@ -4,6 +4,8 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import exception.ResponseException;
+import model.handler.Games;
+import service.ListGames;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,30 +23,39 @@ public class ServerFacade {
         this.serverUrl = url;
     }
 
-    public Object login() throws DataAccessException {
-        return null;
+    public Object login() throws ResponseException {
+        var path = "/session";
+        var response = this.makeRequest("POST", path, null, Games.class);
+        return response.games();
     }
 
-    public Object logout() throws DataAccessException {
-        return null;
+    public Object logout() throws ResponseException {
+        var path = "/session";
+        var response = this.makeRequest("DELETE", path, null, Games.class);
+        return response.games();
     }
 
-    public Object listGames() throws DataAccessException {
-        return null;
+    public Object listGames() throws ResponseException {
+        var path = "/game";
+        var response = this.makeRequest("GET", path, null, Games.class);
+        return response.games();
     }
 
     public Object createGame(ChessGame game) throws ResponseException {
         String path = "/game";
-        String method = "POST";
-        return this.makeRequest(method, path, game, ChessGame.class);
+        return this.makeRequest("POST", path, game, ChessGame.class);
     }
 
-    public Object joinGame() throws DataAccessException {
-        return null;
+    public Object joinGame() throws ResponseException {
+        var path = "/game";
+        var response = this.makeRequest("PUT", path, null, Games.class);
+        return response.games();
     }
 
-    public Object clear() throws DataAccessException {
-        return null;
+    public Object clear() throws ResponseException {
+        var path = "/db";
+        var response = this.makeRequest("DELETE", path, null, Games.class);
+        return response.games();
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass)
