@@ -3,11 +3,12 @@ package server;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import model.handler.*;
+import exception.ResponseException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -32,7 +33,7 @@ public class ServerFacade {
         return null;
     }
 
-    public Object createGame(ChessGame game) throws DataAccessException {
+    public Object createGame(ChessGame game) throws ResponseException {
         String path = "/game";
         String method = "POST";
         return this.makeRequest(method, path, game, ChessGame.class);
@@ -47,7 +48,7 @@ public class ServerFacade {
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass)
-            throws DataAccessException {
+            throws ResponseException{ // serverUrl = http://serverDomainName:port#
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -62,6 +63,16 @@ public class ServerFacade {
             throw ex;
         } catch (Exception ex) {
             throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    private static void writeBody(Object request, HttpURLConnection http) throws IOException {
+        if (request != null) {
+            http.addRequestProperty("Content-Type", "application/json");
+            String reqData = new Gson().toJson(request);
+            try (OutputStream reqBody = http.getOutputStream()) {
+                reqBody.write(reqData.getBytes());
+            }
         }
     }
 
