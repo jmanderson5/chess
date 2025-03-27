@@ -4,8 +4,14 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import exception.ResponseException;
+import model.UserData;
+import model.handler.AuthResponse;
+import model.handler.GameResult;
 import model.handler.Games;
 import service.ListGames;
+import service.Register;
+import spark.Request;
+import spark.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,39 +29,39 @@ public class ServerFacade {
         this.serverUrl = url;
     }
 
-    public Object login() throws ResponseException {
-        var path = "/session";
-        var response = this.makeRequest("POST", path, null, Games.class);
-        return response.games();
+    public Object register(Request req, Response res) throws ResponseException {
+        var path = "/user";
+        return this.makeRequest("POST", path, null, AuthResponse.class);
     }
 
-    public Object logout() throws ResponseException {
+    public Object login() throws ResponseException {
         var path = "/session";
-        var response = this.makeRequest("DELETE", path, null, Games.class);
-        return response.games();
+        return this.makeRequest("POST", path, null, AuthResponse.class);
+    }
+
+    public void logout() throws ResponseException {
+        var path = "/session";
+        this.makeRequest("DELETE", path, null, null);
     }
 
     public Object listGames() throws ResponseException {
         var path = "/game";
-        var response = this.makeRequest("GET", path, null, Games.class);
-        return response.games();
+        return this.makeRequest("GET", path, null, Games.class);
     }
 
     public Object createGame(ChessGame game) throws ResponseException {
         String path = "/game";
-        return this.makeRequest("POST", path, game, ChessGame.class);
+        return this.makeRequest("POST", path, game, GameResult.class);
     }
 
-    public Object joinGame() throws ResponseException {
+    public void joinGame() throws ResponseException {
         var path = "/game";
-        var response = this.makeRequest("PUT", path, null, Games.class);
-        return response.games();
+        this.makeRequest("PUT", path, null, Games.class);
     }
 
-    public Object clear() throws ResponseException {
+    public void clear() throws ResponseException {
         var path = "/db";
-        var response = this.makeRequest("DELETE", path, null, Games.class);
-        return response.games();
+        this.makeRequest("DELETE", path, null, Games.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass)
