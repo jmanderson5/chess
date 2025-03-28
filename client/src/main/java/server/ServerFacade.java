@@ -7,6 +7,7 @@ import model.UserData;
 import model.handler.AuthResponse;
 import model.handler.GameResult;
 import model.handler.Games;
+import model.handler.JoinGameData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,9 +57,9 @@ public class ServerFacade {
         return this.makeRequest("POST", path, new GameName(game), GameResult.class);
     }
 
-    public void joinGame() throws ResponseException {
+    public void joinGame(String userColor, Integer gameID) throws ResponseException {
         var path = "/game";
-        this.makeRequest("PUT", path, null, Games.class);
+        this.makeRequest("PUT", path, new JoinGameData(userColor, gameID), null);
     }
 
     public void clear() throws ResponseException {
