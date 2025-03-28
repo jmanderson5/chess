@@ -1,7 +1,5 @@
 package client;
 
-import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
 import exception.ResponseException;
 import model.UserData;
 import model.handler.AuthResponse;
@@ -9,8 +7,7 @@ import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ServerFacadeTests {
@@ -84,6 +81,34 @@ public class ServerFacadeTests {
 
         Exception exception = assertThrows(ResponseException.class, () -> {
             serverFacade.login(new UserData(username, password, email));
+        });
+
+        assertEquals("Error: unauthorized", exception.getMessage());
+    }
+
+    @Test
+    public void logoutTest() throws ResponseException {
+        serverFacade.clear();
+        String username = "username";
+        String password = "password";
+        String email = "email";
+
+        serverFacade.register(new UserData(username, password, email));
+        serverFacade.logout();
+    }
+
+    @Test
+    public void logoutFail() throws ResponseException {
+        serverFacade.clear();
+        String username = "username";
+        String password = "password";
+        String email = "email";
+
+        serverFacade.register(new UserData(username, password, email));
+        serverFacade.logout();
+
+        Exception exception = assertThrows(ResponseException.class, () -> {
+            serverFacade.logout();
         });
 
         assertEquals("Error: unauthorized", exception.getMessage());
