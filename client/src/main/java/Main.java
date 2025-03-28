@@ -1,8 +1,11 @@
-import chess.*;
+import ui.UserInterface;
 
 public class Main {
     public static void main(String[] args) {
-        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-        System.out.println("♕ 240 Chess Client: " + piece);
+        System.out.println("👑 Welcome to chess. Type Help to start. 👑");
+        System.out.println();
+
+        UserInterface userInterface = new UserInterface();
+        userInterface.run();
     }
 }
