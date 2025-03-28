@@ -140,4 +140,15 @@ public class ServerFacadeTests {
 
         assertEquals(games, serverFacade.listGames());
     }
+
+    @Test
+    public void listGamesFail() throws ResponseException {
+        serverFacade.clear();
+
+        Exception exception = assertThrows(ResponseException.class, () -> {
+            serverFacade.listGames();
+        });
+
+        assertEquals("Error: unauthorized", exception.getMessage());
+    }
 }
