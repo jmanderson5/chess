@@ -151,4 +151,33 @@ public class ServerFacadeTests {
 
         assertEquals("Error: unauthorized", exception.getMessage());
     }
+
+    @Test
+    public void createGameTest() throws ResponseException {
+        serverFacade.clear();
+        serverFacade.register(new UserData("username", "password", "email"));
+
+        serverFacade.createGame("game");
+        Games gamesRecord = serverFacade.listGames();
+        List<GameDataShort> games = gamesRecord.games();
+        GameDataShort gameData = null;
+        for (GameDataShort game : games) {
+            gameData = game;
+        }
+
+        assert gameData != null;
+        assertEquals(new GameDataShort(gameData.gameID(), null, null, "game"),
+                gameData);
+    }
+
+    @Test
+    public void createGameFail() throws ResponseException {
+        serverFacade.clear();
+
+        Exception exception = assertThrows(ResponseException.class, () -> {
+            serverFacade.createGame("game");
+        });
+
+        assertEquals("Error: unauthorized", exception.getMessage());
+    }
 }

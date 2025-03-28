@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class ServerFacade {
 
@@ -44,7 +45,7 @@ public class ServerFacade {
         this.makeRequest("DELETE", path, null, null);
     }
 
-    public Object listGames() throws ResponseException {
+    public Games listGames() throws ResponseException {
         var path = "/game";
         return this.makeRequest("GET", path, null, Games.class);
     }
