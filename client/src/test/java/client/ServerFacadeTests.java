@@ -77,6 +77,15 @@ public class ServerFacadeTests {
 
     @Test
     public void loginFail() throws ResponseException {
+        serverFacade.clear();
+        String username = "username";
+        String password = "password";
+        String email = "email";
 
+        Exception exception = assertThrows(ResponseException.class, () -> {
+            serverFacade.login(new UserData(username, password, email));
+        });
+
+        assertEquals("Error: unauthorized", exception.getMessage());
     }
 }
