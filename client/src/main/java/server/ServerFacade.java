@@ -19,6 +19,7 @@ import java.net.URL;
 public class ServerFacade {
 
     private final String serverUrl;
+    private String authToken;
 
     public ServerFacade(String url) {
         this.serverUrl = url;
@@ -26,12 +27,16 @@ public class ServerFacade {
 
     public AuthResponse register(UserData user) throws ResponseException {
         var path = "/user";
-        return this.makeRequest("POST", path, user, AuthResponse.class);
+        AuthResponse authResponse = this.makeRequest("POST", path, user, AuthResponse.class);
+        authToken = authResponse.authToken();
+        return authResponse;
     }
 
-    public Object login(UserData user) throws ResponseException {
+    public AuthResponse login(UserData user) throws ResponseException {
         var path = "/session";
-        return this.makeRequest("POST", path, user, AuthResponse.class);
+        AuthResponse authResponse = this.makeRequest("POST", path, user, AuthResponse.class);
+        authToken = authResponse.authToken();
+        return authResponse;
     }
 
     public void logout() throws ResponseException {
@@ -56,15 +61,16 @@ public class ServerFacade {
 
     public void clear() throws ResponseException {
         var path = "/db";
-        this.makeRequest("DELETE", path, null, Games.class);
+        this.makeRequest("DELETE", path, null, null);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass)
-            throws ResponseException{ // serverUrl = http://serverDomainName:port#
+            throws ResponseException{
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
+            http.addRequestProperty("authorization", authToken);
             http.setDoOutput(true);
 
             writeBody(request, http);

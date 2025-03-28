@@ -1,5 +1,6 @@
 package client;
 
+import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import exception.ResponseException;
 import model.UserData;
@@ -21,19 +22,20 @@ public class ServerFacadeTests {
     public static void init() throws ResponseException {
         server = new Server();
         int port = server.run(0);
-        serverFacade = new ServerFacade("http://localhost:" + port);
         System.out.println("Started test HTTP server on " + port);
-        serverFacade.clear();
+
+        serverFacade = new ServerFacade("http://localhost:" + port);
     }
 
     @AfterAll
-    static void stopServer() {
+    static void stopServer() throws ResponseException {
         server.stop();
     }
 
 
     @Test
     public void registerTest() throws ResponseException {
+        serverFacade.clear();
         String username = "username";
         String password = "password";
         String email = "email";
@@ -45,13 +47,12 @@ public class ServerFacadeTests {
 
     @Test
     public void registerFailed() throws ResponseException {
+        serverFacade.clear();
         String username = "username";
         String password = "password";
         String email = "email";
 
-        AuthResponse auth = serverFacade.register(new UserData(username, password, email));
-
-        assertEquals(username, auth.username());
+        serverFacade.register(new UserData(username, password, email));
 
         Exception exception = assertThrows(ResponseException.class, () -> {
             serverFacade.register(new UserData(username, password, email));
@@ -60,4 +61,22 @@ public class ServerFacadeTests {
         assertEquals("Error: already taken", exception.getMessage());
     }
 
+    @Test
+    public void loginTest() throws ResponseException {
+        serverFacade.clear();
+        String username = "username";
+        String password = "password";
+        String email = "email";
+
+        serverFacade.register(new UserData(username, password, email));
+        serverFacade.logout();
+        AuthResponse auth = serverFacade.login(new UserData(username, password, email));
+
+        assertEquals(username, auth.username());
+    }
+
+    @Test
+    public void loginFail() throws ResponseException {
+
+    }
 }
