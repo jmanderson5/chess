@@ -12,16 +12,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ResponseException extends Exception {
-    final private int statusCode;
+
+//    final private int statusCode;
 
     public ResponseException(int statusCode, String message) {
         super(message);
-        this.statusCode = statusCode;
+//        this.statusCode = statusCode;
     }
 
-    public String toJson() {
-        return new Gson().toJson(Map.of("message", getMessage(), "status", statusCode));
-    }
+//    public String toJson() {
+//        return new Gson().toJson(Map.of("message", getMessage(), "status", statusCode));
+//    }
 
     public static ResponseException fromJson(InputStream stream) {
         JsonObject jsonObject = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
@@ -37,7 +38,7 @@ public class ResponseException extends Exception {
         return new ResponseException(status, message);
     }
 
-    public int StatusCode() {
-        return statusCode;
-    }
+//    public int statusCode() {
+//        return statusCode;
+//    }
 }
