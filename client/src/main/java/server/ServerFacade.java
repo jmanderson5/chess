@@ -49,9 +49,10 @@ public class ServerFacade {
         return this.makeRequest("GET", path, null, Games.class);
     }
 
-    public Object createGame(ChessGame game) throws ResponseException {
+    public GameResult createGame(String game) throws ResponseException {
         String path = "/game";
-        return this.makeRequest("POST", path, game, GameResult.class);
+        record GameName(String gameName) {}
+        return this.makeRequest("POST", path, new GameName(game), GameResult.class);
     }
 
     public void joinGame() throws ResponseException {

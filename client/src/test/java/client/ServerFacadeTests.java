@@ -1,11 +1,19 @@
 package client;
 
+import chess.ChessGame;
 import exception.ResponseException;
+import model.GameData;
 import model.UserData;
 import model.handler.AuthResponse;
+import model.handler.GameDataShort;
+import model.handler.GameResult;
+import model.handler.Games;
 import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -112,5 +120,24 @@ public class ServerFacadeTests {
         });
 
         assertEquals("Error: unauthorized", exception.getMessage());
+    }
+
+    @Test
+    public void listGamesTest() throws ResponseException {
+        serverFacade.clear();
+        serverFacade.register(new UserData("username", "password", "email"));
+        List<GameDataShort> gamesList = new ArrayList<>();
+
+        GameResult gameResult = serverFacade.createGame("game");
+        GameResult gameResult2 = serverFacade.createGame("name");
+        GameDataShort game = new GameDataShort(gameResult.gameID(), null, null,
+                "game");
+        GameDataShort game2 = new GameDataShort(gameResult2.gameID(), null, null,
+                "name");
+        gamesList.add(game);
+        gamesList.add(game2);
+        Games games = new Games(gamesList);
+
+        assertEquals(games, serverFacade.listGames());
     }
 }
