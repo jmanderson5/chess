@@ -1,6 +1,5 @@
 package server;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import model.UserData;
@@ -16,7 +15,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 
 public class ServerFacade {
 
@@ -65,6 +63,7 @@ public class ServerFacade {
     public void clear() throws ResponseException {
         var path = "/db";
         this.makeRequest("DELETE", path, null, null);
+        authToken = null;
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass)

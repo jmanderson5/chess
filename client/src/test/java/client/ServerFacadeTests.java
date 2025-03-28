@@ -1,8 +1,6 @@
 package client;
 
-import chess.ChessGame;
 import exception.ResponseException;
-import model.GameData;
 import model.UserData;
 import model.handler.AuthResponse;
 import model.handler.GameDataShort;
@@ -201,7 +199,8 @@ public class ServerFacadeTests {
                 gameData);
     }
 
-    @Test void joinGameFail() throws ResponseException {
+    @Test
+    void joinGameFail() throws ResponseException {
         serverFacade.clear();
 
         Exception exception = assertThrows(ResponseException.class, () -> {
@@ -209,5 +208,23 @@ public class ServerFacadeTests {
         });
 
         assertEquals("Error: unauthorized", exception.getMessage());
+    }
+
+    @Test
+    void clearTest() throws ResponseException {
+        serverFacade.clear();
+        UserData user = new UserData("username", "password", "email");
+        serverFacade.register(user);
+
+        serverFacade.createGame("game");
+        serverFacade.clear();
+        serverFacade.register(user);
+        List<GameDataShort> games = serverFacade.listGames().games();
+        GameDataShort gameData = null;
+        for (GameDataShort game : games) {
+            gameData = game;
+        }
+
+        assertNull(gameData);
     }
 }
