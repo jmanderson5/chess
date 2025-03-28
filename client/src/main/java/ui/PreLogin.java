@@ -4,7 +4,7 @@ public class PreLogin {
     public boolean run(String input) {
         if (input.equals("help")) { help(); }
 
-        return false;
+        return true;
     }
 
     private void help() {
