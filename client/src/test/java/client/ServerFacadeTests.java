@@ -200,4 +200,14 @@ public class ServerFacadeTests {
         assertEquals(new GameDataShort(gameData.gameID(), "username", null, "game"),
                 gameData);
     }
+
+    @Test void joinGameFail() throws ResponseException {
+        serverFacade.clear();
+
+        Exception exception = assertThrows(ResponseException.class, () -> {
+            serverFacade.joinGame("username", 1234);
+        });
+
+        assertEquals("Error: unauthorized", exception.getMessage());
+    }
 }
