@@ -3,10 +3,7 @@ package server;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import model.UserData;
-import model.handler.AuthResponse;
-import model.handler.GameResult;
-import model.handler.Games;
-import model.handler.JoinGameData;
+import model.handler.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +29,7 @@ public class ServerFacade {
         return authResponse;
     }
 
-    public AuthResponse login(UserData user) throws ResponseException {
+    public AuthResponse login(LoginData user) throws ResponseException {
         var path = "/session";
         AuthResponse authResponse = this.makeRequest("POST", path, user, AuthResponse.class);
         authToken = authResponse.authToken();

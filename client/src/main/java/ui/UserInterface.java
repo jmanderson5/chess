@@ -1,5 +1,7 @@
 package ui;
 
+import server.ServerFacade;
+
 import java.util.Scanner;
 
 public class UserInterface {
@@ -7,7 +9,7 @@ public class UserInterface {
     private boolean loggedIn = false;
     private boolean exit = false;
 
-    public void run() {
+    public void run(ServerFacade serverFacade) {
         PreLogin preLogin = new PreLogin();
         PostLogin postLogin = new PostLogin();
 
@@ -18,7 +20,7 @@ public class UserInterface {
                 if (input.equals("quit")) {
                     exit = true;
                 } else {
-                    loggedIn = preLogin.run(input);
+                    loggedIn = preLogin.run(input, serverFacade);
                 }
             } else {
                 System.out.print("[LOGGED IN] >>> ");
@@ -26,7 +28,7 @@ public class UserInterface {
                 if (input.equals("quit")) {
                     exit = true;
                 } else {
-                    loggedIn = postLogin.run(input);
+                    loggedIn = postLogin.run(input, serverFacade);
                 }
             }
         }

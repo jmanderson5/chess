@@ -1,7 +1,9 @@
 package ui;
 
+import server.ServerFacade;
+
 public class PostLogin {
-    public boolean run(String input) {
+    public boolean run(String input, ServerFacade serverFacade) {
         if (input.equals("help")) { help(); }
         return false;
     }

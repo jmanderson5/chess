@@ -2,10 +2,7 @@ package client;
 
 import exception.ResponseException;
 import model.UserData;
-import model.handler.AuthResponse;
-import model.handler.GameDataShort;
-import model.handler.GameResult;
-import model.handler.Games;
+import model.handler.*;
 import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
@@ -73,7 +70,7 @@ public class ServerFacadeTests {
 
         serverFacade.register(new UserData(username, password, email));
         serverFacade.logout();
-        AuthResponse auth = serverFacade.login(new UserData(username, password, email));
+        AuthResponse auth = serverFacade.login(new LoginData(username, password));
 
         assertEquals(username, auth.username());
     }
@@ -83,10 +80,9 @@ public class ServerFacadeTests {
         serverFacade.clear();
         String username = "username";
         String password = "password";
-        String email = "email";
 
         Exception exception = assertThrows(ResponseException.class, () -> {
-            serverFacade.login(new UserData(username, password, email));
+            serverFacade.login(new LoginData(username, password));
         });
 
         assertEquals("Error: unauthorized", exception.getMessage());

@@ -1,10 +1,25 @@
 package ui;
 
+import model.UserData;
+import server.ServerFacade;
+
 public class PreLogin {
-    public boolean run(String input) {
-        if (input.equals("help")) { help(); }
+    public boolean run(String input, ServerFacade serverFacade) {
+        String[] parts = input.split(" ");
+        if (parts[0].equals("register")) { register(parts[1], parts[2], parts[3]); }
+        if (parts[0].equals("login")) { login(parts[1], parts[2]); }
+        if (parts[0].equals("help")) { help(); }
 
         return true;
+    }
+
+    private void register(String username, String password, String email) {
+        UserData user = new UserData(username, password, email);
+
+    }
+
+    private void login(String username, String password) {
+
     }
 
     private void help() {
