@@ -97,14 +97,21 @@ public class PostLogin {
     }
 
     private void observe(String gameID) {
-
+        drawBoard("WHITE", 1234);
     }
 
     private void drawBoard(String playerColor, Integer gameID) {
-        // draw white board perspective
-        whiteBoard();
-        // draw black board perspective
-        blackBoard();
+        if (playerColor.equals("WHITE")) {
+            // draw white board perspective
+            whiteBoard();
+            // draw black board perspective
+            blackBoard();
+        } else {
+            // draw black board perspective
+            blackBoard();
+            // draw white board perspective
+            whiteBoard();
+        }
     }
 
     private void whiteBoard() {
