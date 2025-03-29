@@ -1,13 +1,11 @@
 package ui;
 
 import exception.ResponseException;
-import model.GameData;
 import model.handler.GameDataShort;
 import model.handler.GameResult;
 import model.handler.Games;
 import server.ServerFacade;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PostLogin {
@@ -81,7 +79,22 @@ public class PostLogin {
     }
 
     private void join(String gameID, String playerColor) {
+        boolean joined = false;
 
+        try {
+            serverFacade.joinGame(playerColor, Integer.parseInt(gameID));
+            joined = true;
+        } catch (ResponseException e) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println(e.getMessage());
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        }
+
+        if (joined) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Successfully joined game");
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        }
     }
 
     private void observe() {
@@ -89,7 +102,23 @@ public class PostLogin {
     }
 
     private boolean logout() {
-        return true;
+        boolean loggedIn = true;
+
+        try {
+            serverFacade.logout();
+            loggedIn = false;
+        } catch (ResponseException e) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println(e.getMessage());
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        }
+
+        if (!loggedIn) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Successful logout");
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        }
+        return loggedIn;
     }
 
     private void help() {
