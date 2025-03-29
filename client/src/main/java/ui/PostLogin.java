@@ -1,5 +1,7 @@
 package ui;
 
+import exception.ResponseException;
+import model.handler.GameResult;
 import server.ServerFacade;
 
 public class PostLogin {
@@ -11,9 +13,9 @@ public class PostLogin {
         boolean loggedIn = true;
 
         String[] parts = input.split(" ");
-        if (parts.length == 2 && parts[0].equals("create")) { create(); }
+        if (parts.length == 2 && parts[0].equals("create")) { create(parts[1]); }
         else if (parts.length == 1 && parts[0].equals("list")) { list(); }
-        else if (parts.length == 3 && parts[0].equals("join")) { join(); }
+        else if (parts.length == 3 && parts[0].equals("join")) { join(parts[1], parts[2]); }
         else if (parts.length == 1 && parts[0].equals("observe")) { observe(); }
         else if (parts.length == 1 && parts[0].equals("logout")) { loggedIn = logout(); }
         else if (parts.length == 1 && parts[0].equals("help")) { help(); }
@@ -26,15 +28,31 @@ public class PostLogin {
         return loggedIn;
     }
 
-    private void create() {
+    private void create(String game) {
+        boolean created = false;
+        GameResult gameResult = null;
 
+        try {
+            gameResult = serverFacade.createGame(game);
+            created = true;
+        } catch (ResponseException e) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println(e.getMessage());
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        }
+
+        if (created) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Created '" + game + "' gameID: " + gameResult.gameID());
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        }
     }
 
     private void list() {
 
     }
 
-    private void join() {
+    private void join(String gameID, String playerColor) {
 
     }
 
