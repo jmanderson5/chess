@@ -9,6 +9,7 @@ import model.handler.GameDataShort;
 import model.handler.Games;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,5 +43,8 @@ public class ListGames {
                     value.blackUsername(), value.gameName());
             gamesList.add(game);
         }
+
+        gamesList.sort(Comparator.comparing(GameDataShort::gameName));
+        int test = 1;
     }
 }

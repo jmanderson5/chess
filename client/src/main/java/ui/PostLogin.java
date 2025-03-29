@@ -2,7 +2,6 @@ package ui;
 
 import exception.ResponseException;
 import model.handler.GameDataShort;
-import model.handler.GameResult;
 import model.handler.Games;
 import server.ServerFacade;
 
@@ -34,10 +33,9 @@ public class PostLogin {
 
     private void create(String game) {
         boolean created = false;
-        GameResult gameResult = null;
 
         try {
-            gameResult = serverFacade.createGame(game);
+            serverFacade.createGame(game);
             created = true;
         } catch (ResponseException e) {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
@@ -47,7 +45,7 @@ public class PostLogin {
 
         if (created) {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
-            System.out.println("Created '" + game + "' gameID: " + gameResult.gameID());
+            System.out.println("Created '" + game + "'");
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
         }
     }
@@ -70,47 +68,113 @@ public class PostLogin {
             List<GameDataShort> games = gamesRecord.games();
 
             System.out.println("Games list:");
+            Integer gameNumber = 1;
             for (GameDataShort game : games) {
-                System.out.println(" - " + game.gameName() + " ID:" + game.gameID() + " Black user:" +
+                System.out.println(gameNumber + ") " + game.gameName() + " Black user:" +
                         game.blackUsername() + " White user:" + game.whiteUsername());
+                gameNumber ++;
             }
             System.out.println(EscapeSequences.RESET_TEXT_COLOR);
         }
     }
 
-    private void join(String gameID, String playerColor) {
+    private int join(String gameID, String playerColor) {
         boolean joined = false;
-        Integer game = Integer.parseInt(gameID);
+        boolean gameExists = false;
+        Integer game = null;
+        try {
+            game = Integer.parseInt(gameID);
+        } catch (NumberFormatException e) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Error: User error input gameID as int");
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+
+            return 1;
+        }
 
         try {
-            serverFacade.joinGame(playerColor, game);
+            Games gamesRecord = serverFacade.listGames();
+            List<GameDataShort> games = gamesRecord.games();
+
+            Integer gameNumber = 1;
+            for (GameDataShort gameData : games) {
+                if (gameNumber.equals(game)) {
+                    serverFacade.joinGame(playerColor, gameData.gameID());
+                    gameExists = true;
+                }
+                gameNumber ++;
+            }
             joined = true;
+        } catch (ResponseException e) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println(e.getMessage());
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+            gameExists = true;
+        }
+
+        if (joined && gameExists) {
+            drawBoard(playerColor, game);
+        } else {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Game does not exist");
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        }
+
+        return 0;
+    }
+
+    private int observe(String gameID) {
+        Integer game = null;
+        try {
+            game = Integer.parseInt(gameID);
+        } catch (NumberFormatException e) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Error: User error input gameID as int");
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+
+            return 1;
+        }
+        boolean gameExists = false;
+        Games gamesRecord = null;
+
+        try {
+            gamesRecord = serverFacade.listGames();
         } catch (ResponseException e) {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
             System.out.println(e.getMessage());
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
         }
 
-        if (joined) {
-            drawBoard(playerColor, game);
-        }
-    }
+        assert gamesRecord != null;
+        List<GameDataShort> games = gamesRecord.games();
 
-    private void observe(String gameID) {
-        drawBoard("WHITE", 1234);
+        Integer gameNumber = 1;
+        for (GameDataShort gameData : games) {
+            assert game != null;
+            if (game.equals(gameNumber)) {
+                gameExists = true;
+            }
+            gameNumber ++;
+        }
+
+        if (gameExists) {
+            drawBoard("WHITE", 1234);
+        } else {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Error: Game does not exist");
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        }
+
+        return 0;
     }
 
     private void drawBoard(String playerColor, Integer gameID) {
         if (playerColor.equals("WHITE")) {
             // draw white board perspective
             whiteBoard();
-            // draw black board perspective
-            blackBoard();
         } else {
             // draw black board perspective
             blackBoard();
-            // draw white board perspective
-            whiteBoard();
         }
     }
 
@@ -235,111 +299,114 @@ public class PostLogin {
         System.out.println();
 
         // header
-        drawLetters();
+        drawLettersReversed();
 
-        // first row
+        // eight row
         System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
-        System.out.print(" 1 ");
-        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(" 8 ");
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
         System.out.print(EscapeSequences.WHITE_ROOK);
-        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-        System.out.print(EscapeSequences.WHITE_KNIGHT);
         System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-        System.out.print(EscapeSequences.WHITE_BISHOP);
+        System.out.print(EscapeSequences.WHITE_KNIGHT);
         System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_BISHOP);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
         System.out.print(EscapeSequences.WHITE_KING);
-        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
         System.out.print(EscapeSequences.WHITE_QUEEN);
-        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-        System.out.print(EscapeSequences.WHITE_BISHOP);
         System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-        System.out.print(EscapeSequences.WHITE_KNIGHT);
+        System.out.print(EscapeSequences.WHITE_BISHOP);
         System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_KNIGHT);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
         System.out.print(EscapeSequences.WHITE_ROOK);
         System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
-        System.out.print(" 1 ");
+        System.out.print(" 8 ");
         System.out.println(EscapeSequences.RESET_BG_COLOR);
-
-        // second row
-        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
-        System.out.print(" 2 ");
-        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-        System.out.print(EscapeSequences.WHITE_PAWN);
-        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-        System.out.print(EscapeSequences.WHITE_PAWN);
-        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-        System.out.print(EscapeSequences.WHITE_PAWN);
-        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-        System.out.print(EscapeSequences.WHITE_PAWN);
-        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-        System.out.print(EscapeSequences.WHITE_PAWN);
-        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-        System.out.print(EscapeSequences.WHITE_PAWN);
-        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-        System.out.print(EscapeSequences.WHITE_PAWN);
-        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-        System.out.print(EscapeSequences.WHITE_PAWN);
-        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
-        System.out.print(" 2 ");
-        System.out.println(EscapeSequences.RESET_BG_COLOR);
-
-        // fifth row
-        emptyRow1(3);
-
-        // fourth row
-        emptyRow2(4);
-
-        // third row
-        emptyRow1(5);
-
-        // sixth row
-        emptyRow2(6);
 
         // seventh row
         System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
         System.out.print(" 2 ");
         System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.WHITE_PAWN);
         System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-        System.out.print(EscapeSequences.BLACK_PAWN);System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
         System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-        System.out.print(EscapeSequences.BLACK_PAWN);System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
         System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-        System.out.print(EscapeSequences.BLACK_PAWN);System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
         System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.WHITE_PAWN);
         System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
         System.out.print(" 2 ");
         System.out.println(EscapeSequences.RESET_BG_COLOR);
 
-        // eighth row
+        // third row
+        emptyRow2(3);
+
+        // fourth row
+        emptyRow1(4);
+
+        // fifth row
+        emptyRow2(5);
+
+        // sixth row
+        emptyRow1(6);
+
+        // seventh row
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 7 ");
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 7 ");
+        System.out.println(EscapeSequences.RESET_BG_COLOR);
+
+        // Eighth row
         System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
         System.out.print(" 8 ");
-        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
         System.out.print(EscapeSequences.BLACK_ROOK);
-        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-        System.out.print(EscapeSequences.BLACK_KNIGHT);
         System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-        System.out.print(EscapeSequences.BLACK_BISHOP);
+        System.out.print(EscapeSequences.BLACK_KNIGHT);
         System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-        System.out.print(EscapeSequences.BLACK_QUEEN);
+        System.out.print(EscapeSequences.BLACK_BISHOP);
         System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
         System.out.print(EscapeSequences.BLACK_KING);
         System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-        System.out.print(EscapeSequences.BLACK_BISHOP);
+        System.out.print(EscapeSequences.BLACK_QUEEN);
         System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-        System.out.print(EscapeSequences.BLACK_KNIGHT);
+        System.out.print(EscapeSequences.BLACK_BISHOP);
         System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_KNIGHT);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
         System.out.print(EscapeSequences.BLACK_ROOK);
         System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
         System.out.print(" 8 ");
         System.out.println(EscapeSequences.RESET_BG_COLOR);
 
         // footer
-        drawLetters();
+        drawLettersReversed();
 
         // reset
         System.out.println(EscapeSequences.RESET_TEXT_COLOR);
@@ -356,6 +423,21 @@ public class PostLogin {
         System.out.print(" f ");
         System.out.print(" g ");
         System.out.print(" h ");
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.println(EscapeSequences.RESET_BG_COLOR);
+    }
+
+    private void drawLettersReversed() {
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(" h ");
+        System.out.print(" g ");
+        System.out.print(" f ");
+        System.out.print(" e ");
+        System.out.print(" d ");
+        System.out.print(" c ");
+        System.out.print(" b ");
+        System.out.print(" a ");
         System.out.print(EscapeSequences.EMPTY);
         System.out.println(EscapeSequences.RESET_BG_COLOR);
     }

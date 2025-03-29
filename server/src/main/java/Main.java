@@ -10,7 +10,6 @@ public class Main {
 
         newServer.run(8080);
 
-
         System.out.println("♕ 240 Chess Server: " + piece);
     }
 }
