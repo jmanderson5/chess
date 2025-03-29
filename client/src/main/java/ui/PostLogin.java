@@ -1,8 +1,14 @@
 package ui;
 
 import exception.ResponseException;
+import model.GameData;
+import model.handler.GameDataShort;
 import model.handler.GameResult;
+import model.handler.Games;
 import server.ServerFacade;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PostLogin {
 
@@ -49,7 +55,29 @@ public class PostLogin {
     }
 
     private void list() {
+        boolean listed = false;
+        Games gamesRecord = null;
 
+        try {
+            gamesRecord = serverFacade.listGames();
+            listed = true;
+        } catch (ResponseException e) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println(e.getMessage());
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        }
+
+        if (listed) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            List<GameDataShort> games = gamesRecord.games();
+
+            System.out.println("Games list:");
+            for (GameDataShort game : games) {
+                System.out.println(" - " + game.gameName() + " ID:" + game.gameID() + " Black user:" +
+                        game.blackUsername() + " White user:" + game.whiteUsername());
+            }
+            System.out.println(EscapeSequences.RESET_TEXT_COLOR);
+        }
     }
 
     private void join(String gameID, String playerColor) {
