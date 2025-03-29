@@ -14,9 +14,14 @@ public class PreLogin {
         boolean loggedIn = false;
 
         String[] parts = input.split(" ");
-        if (parts[0].equals("register")) { loggedIn = register(parts[1], parts[2], parts[3]); }
-        if (parts[0].equals("login")) { loggedIn = login(parts[1], parts[2]); }
-        if (parts[0].equals("help")) { help(); }
+        if (parts.length == 4 && parts[0].equals("register")) { loggedIn = register(parts[1], parts[2], parts[3]); }
+        else if (parts.length == 3 && parts[0].equals("login")) { loggedIn = login(parts[1], parts[2]); }
+        else if (parts.length == 1 && parts[0].equals("help")) { help(); }
+        else {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.print("unsuccessful: try again");
+            System.out.println(EscapeSequences.RESET_TEXT_COLOR);
+        }
 
         return loggedIn;
     }
