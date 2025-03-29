@@ -20,7 +20,7 @@ public class PostLogin {
         if (parts.length == 2 && parts[0].equals("create")) { create(parts[1]); }
         else if (parts.length == 1 && parts[0].equals("list")) { list(); }
         else if (parts.length == 3 && parts[0].equals("join")) { join(parts[1], parts[2]); }
-        else if (parts.length == 1 && parts[0].equals("observe")) { observe(); }
+        else if (parts.length == 2 && parts[0].equals("observe")) { observe(parts[1]); }
         else if (parts.length == 1 && parts[0].equals("logout")) { loggedIn = logout(); }
         else if (parts.length == 1 && parts[0].equals("help")) { help(); }
         else {
@@ -80,9 +80,10 @@ public class PostLogin {
 
     private void join(String gameID, String playerColor) {
         boolean joined = false;
+        Integer game = Integer.parseInt(gameID);
 
         try {
-            serverFacade.joinGame(playerColor, Integer.parseInt(gameID));
+            serverFacade.joinGame(playerColor, game);
             joined = true;
         } catch (ResponseException e) {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
@@ -91,14 +92,317 @@ public class PostLogin {
         }
 
         if (joined) {
-            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
-            System.out.println("Successfully joined game");
-            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+            drawBoard(playerColor, game);
         }
     }
 
-    private void observe() {
+    private void observe(String gameID) {
 
+    }
+
+    private void drawBoard(String playerColor, Integer gameID) {
+        // draw white board perspective
+        whiteBoard();
+        // draw black board perspective
+        blackBoard();
+    }
+
+    private void whiteBoard() {
+        System.out.println();
+
+        // header
+        drawLetters();
+
+        // eight row
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 8 ");
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_ROOK);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_KNIGHT);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_BISHOP);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_QUEEN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_KING);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_BISHOP);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_KNIGHT);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_ROOK);
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 8 ");
+        System.out.println(EscapeSequences.RESET_BG_COLOR);
+
+        // seventh row
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 7 ");
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 7 ");
+        System.out.println(EscapeSequences.RESET_BG_COLOR);
+
+        // sixth row
+        emptyRow2(6);
+
+        // fifth row
+        emptyRow1(5);
+
+        // fourth row
+        emptyRow2(4);
+
+        // third row
+        emptyRow1(3);
+
+        // second row
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 2 ");
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 2 ");
+        System.out.println(EscapeSequences.RESET_BG_COLOR);
+
+        // first row
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 1 ");
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_ROOK);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_KNIGHT);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_BISHOP);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_QUEEN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_KING);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_BISHOP);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_KNIGHT);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_ROOK);
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 1 ");
+        System.out.println(EscapeSequences.RESET_BG_COLOR);
+
+        // footer
+        drawLetters();
+
+        // reset
+        System.out.println(EscapeSequences.RESET_TEXT_COLOR);
+    }
+
+    private void blackBoard() {
+        System.out.println();
+
+        // header
+        drawLetters();
+
+        // first row
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 1 ");
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_ROOK);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_KNIGHT);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_BISHOP);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_KING);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_QUEEN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_BISHOP);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_KNIGHT);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_ROOK);
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 1 ");
+        System.out.println(EscapeSequences.RESET_BG_COLOR);
+
+        // second row
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 2 ");
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.WHITE_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 2 ");
+        System.out.println(EscapeSequences.RESET_BG_COLOR);
+
+        // fifth row
+        emptyRow1(3);
+
+        // fourth row
+        emptyRow2(4);
+
+        // third row
+        emptyRow1(5);
+
+        // sixth row
+        emptyRow2(6);
+
+        // seventh row
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 2 ");
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_PAWN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 2 ");
+        System.out.println(EscapeSequences.RESET_BG_COLOR);
+
+        // eighth row
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 8 ");
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_ROOK);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_KNIGHT);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_BISHOP);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_QUEEN);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_KING);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_BISHOP);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.BLACK_KNIGHT);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.BLACK_ROOK);
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" 8 ");
+        System.out.println(EscapeSequences.RESET_BG_COLOR);
+
+        // footer
+        drawLetters();
+
+        // reset
+        System.out.println(EscapeSequences.RESET_TEXT_COLOR);
+    }
+
+    private void drawLetters() {
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(" a ");
+        System.out.print(" b ");
+        System.out.print(" c ");
+        System.out.print(" d ");
+        System.out.print(" e ");
+        System.out.print(" f ");
+        System.out.print(" g ");
+        System.out.print(" h ");
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.println(EscapeSequences.RESET_BG_COLOR);
+    }
+
+    private void emptyRow1(Integer row) {
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" " + row + " ");
+
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" " + row + " ");
+        System.out.println(EscapeSequences.RESET_BG_COLOR);
+    }
+
+    private void emptyRow2(Integer row) {
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" " + row + " ");
+
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+        System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        System.out.print(EscapeSequences.EMPTY);
+
+        System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        System.out.print(" " + row + " ");
+        System.out.println(EscapeSequences.RESET_BG_COLOR);
     }
 
     private boolean logout() {
