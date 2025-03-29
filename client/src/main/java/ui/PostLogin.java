@@ -3,9 +3,47 @@ package ui;
 import server.ServerFacade;
 
 public class PostLogin {
+
+    private ServerFacade serverFacade;
+
     public boolean run(String input, ServerFacade serverFacade) {
-        if (input.equals("help")) { help(); }
-        return false;
+        this.serverFacade = serverFacade;
+        boolean loggedIn = true;
+
+        String[] parts = input.split(" ");
+        if (parts.length == 2 && parts[0].equals("create")) { create(); }
+        else if (parts.length == 1 && parts[0].equals("list")) { list(); }
+        else if (parts.length == 3 && parts[0].equals("join")) { join(); }
+        else if (parts.length == 1 && parts[0].equals("observe")) { observe(); }
+        else if (parts.length == 1 && parts[0].equals("logout")) { loggedIn = logout(); }
+        else if (parts.length == 1 && parts[0].equals("help")) { help(); }
+        else {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.print("unsuccessful: try again");
+            System.out.println(EscapeSequences.RESET_TEXT_COLOR);
+        }
+
+        return loggedIn;
+    }
+
+    private void create() {
+
+    }
+
+    private void list() {
+
+    }
+
+    private void join() {
+
+    }
+
+    private void observe() {
+
+    }
+
+    private boolean logout() {
+        return true;
     }
 
     private void help() {
