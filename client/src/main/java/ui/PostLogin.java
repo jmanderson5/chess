@@ -34,6 +34,7 @@ public class PostLogin {
 
     private void create(String game) {
         boolean created = false;
+        Games gamesRecord = null;
 
         try {
             serverFacade.createGame(game);
@@ -44,9 +45,29 @@ public class PostLogin {
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
         }
 
+        // get game number
+        try {
+            gamesRecord = serverFacade.listGames();
+        } catch (ResponseException e) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println(e.getMessage());
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        }
+
+        assert gamesRecord != null;
+        List<GameDataShort> games = gamesRecord.games();
+        int gameNumber = 0;
+        int count = 1;
+        for (GameDataShort gameData : games) {
+            if (gameData.gameName().equals(game)) {
+                gameNumber = count;
+            }
+            count ++;
+        }
+
         if (created) {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
-            System.out.println("Created '" + game + "'");
+            System.out.println("Created " + gameNumber + ") '" + game + "'");
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
         }
     }
@@ -82,12 +103,12 @@ public class PostLogin {
     private void join(String gameID, String playerColor) {
         boolean joined = false;
         boolean gameExists = false;
-        Integer game = null;
+        Integer game;
         try {
             game = Integer.parseInt(gameID);
         } catch (NumberFormatException e) {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
-            System.out.println("Error: User error input gameID as int");
+            System.out.println("Error: User error. Input gameID as int.");
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
 
             return;
@@ -123,12 +144,12 @@ public class PostLogin {
     }
 
     private void observe(String gameID) {
-        Integer game = null;
+        Integer game;
         try {
             game = Integer.parseInt(gameID);
         } catch (NumberFormatException e) {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
-            System.out.println("Error: User error input gameID as int");
+            System.out.println("Error: User error. Input gameID as int.");
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
 
             return;
@@ -136,6 +157,7 @@ public class PostLogin {
         boolean gameExists = false;
         Games gamesRecord = null;
 
+        // get game number
         try {
             gamesRecord = serverFacade.listGames();
         } catch (ResponseException e) {
@@ -146,10 +168,8 @@ public class PostLogin {
 
         assert gamesRecord != null;
         List<GameDataShort> games = gamesRecord.games();
-
         Integer gameNumber = 1;
         for (GameDataShort gameData : games) {
-            assert game != null;
             if (game.equals(gameNumber)) {
                 gameExists = true;
             }
