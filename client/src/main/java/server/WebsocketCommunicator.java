@@ -36,7 +36,10 @@ public class WebsocketCommunicator {
                 @Override
                 public void onMessage(String message) {
                     ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
-                    notifyUsers(notification);
+//                    switch (action.type()) {
+//                        case ENTER -> enter(action.visitorName(), session);
+//                        case EXIT -> exit(action.visitorName());
+//                    }
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {

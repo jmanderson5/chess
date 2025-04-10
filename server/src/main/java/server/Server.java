@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.*;
 import model.*;
 import model.handler.*;
+import server.websocket.WebSocketHandler;
 import service.*;
 import spark.*;
 
@@ -12,6 +13,7 @@ public class Server {
     private UserDAO userDAO;
     private AuthDAO authDAO;
     private GameDAO gameDAO;
+    private final WebSocketHandler webSocketHandler;
 
     public Server() {
         try {
@@ -19,12 +21,16 @@ public class Server {
             this.authDAO = new SQLAuthDAO();
             this.gameDAO = new SQLGameDAO();
         } catch (DataAccessException ignore) {}
+        webSocketHandler = new WebSocketHandler(gameDAO, authDAO);
     }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
+        // WebSocket request
+        Spark.webSocket("/ws", webSocketHandler);
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);
@@ -117,6 +123,7 @@ public class Server {
         JoinGame joinGame = new JoinGame();
         joinGame.runJoinGame(authDAO, gameDAO, auth, info.playerColor(), info.gameID());
         res.status(200);
+        // send message via WebSocket
         return new Gson().toJson(new NullResponse());
     }
 

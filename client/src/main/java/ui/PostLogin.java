@@ -10,7 +10,6 @@ import java.util.List;
 public class PostLogin {
 
     private ServerFacade serverFacade;
-    private Board board = new Board();
 
     public boolean run(String input, ServerFacade serverFacade) {
         this.serverFacade = serverFacade;
@@ -134,13 +133,13 @@ public class PostLogin {
             gameExists = true;
         }
 
-        if (joined && gameExists) {
-            board.drawBoard(playerColor, game);
-        } else {
-            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
-            System.out.println("Game does not exist");
-            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
-        }
+//        if (joined && gameExists) {
+//            board.drawBoard(playerColor, game);
+//        } else {
+//            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+//            System.out.println("Game does not exist");
+//            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+//        }
     }
 
     private void observe(String gameID) {
@@ -176,13 +175,13 @@ public class PostLogin {
             gameNumber ++;
         }
 
-        if (gameExists) {
-            board.drawBoard("WHITE", 1234);
-        } else {
-            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
-            System.out.println("Error: Game does not exist");
-            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
-        }
+//        if (gameExists) {
+//            board.drawBoard("WHITE", 1234);
+//        } else {
+//            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+//            System.out.println("Error: Game does not exist");
+//            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+//        }
     }
 
     private boolean logout() {
