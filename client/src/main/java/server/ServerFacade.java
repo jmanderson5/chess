@@ -1,17 +1,8 @@
 package server;
 
-import com.google.gson.Gson;
 import exception.ResponseException;
 import model.UserData;
 import model.handler.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
 
 public class ServerFacade {
 
@@ -23,7 +14,11 @@ public class ServerFacade {
     public ServerFacade(String url) {
         this.serverUrl = url;
         httpCommunicator = new HttpCommunicator(serverUrl);
-        websocketCommunicator = new WebsocketCommunicator(serverUrl);
+        try {
+            websocketCommunicator = new WebsocketCommunicator(serverUrl);
+        } catch (ResponseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public AuthResponse register(UserData user) throws ResponseException {
@@ -58,14 +53,23 @@ public class ServerFacade {
         return httpCommunicator.makeRequest("POST", path, new GameName(game), GameResult.class);
     }
 
-    public void joinGame(String userColor, Integer gameID) throws ResponseException {
-        var path = "/game";
-        httpCommunicator.makeRequest("PUT", path, new JoinGameData(userColor, gameID), null);
-    }
-
     public void clear() throws ResponseException {
         var path = "/db";
         httpCommunicator.makeRequest("DELETE", path, null, null);
         authToken = null;
+    }
+
+    // WebSocket stuff
+    public void joinGame(String userColor, Integer gameID) throws ResponseException {
+        var path = "/game";
+        httpCommunicator.makeRequest("PUT", path, new JoinGameData(userColor, gameID), null);
+        // connect to WebSocket
+        websocketCommunicator = new WebsocketCommunicator(serverUrl);
+        websocketCommunicator.setAuthToken(authToken);
+        websocketCommunicator.connect(gameID);
+    }
+
+    public void makeMove() {
+
     }
 }
