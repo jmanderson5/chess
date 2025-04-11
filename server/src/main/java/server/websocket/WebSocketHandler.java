@@ -1,5 +1,6 @@
 package server.websocket;
 
+import chess.ChessMove;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
@@ -8,7 +9,7 @@ import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import websocket.commands.UserGameCommand;
+import websocket.commands.MakeMoveCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
@@ -30,16 +31,16 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException {
-        UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
+        MakeMoveCommand action = new Gson().fromJson(message, MakeMoveCommand.class);
         switch (action.getCommandType()) {
             case CONNECT -> connect(action.getGameID(), action.getAuthToken(), session);
-            case MAKE_MOVE -> makeMove();
+            case MAKE_MOVE -> makeMove(action.getGameID(), action.getAuthToken(), session, action.getMove());
             case LEAVE -> leave(action.getGameID(), action.getAuthToken());
             case RESIGN -> resign();
         }
     }
 
-    private void connect(Integer gameID, String authToken, Session session) throws DataAccessException, IOException {
+    private void connect(Integer gameID, String authToken, Session session) throws IOException {
         GameData game;
         try {
             game = gameDAO.getGameByID(gameID);
@@ -66,7 +67,9 @@ public class WebSocketHandler {
         }
     }
 
-    private void makeMove() {}
+    private void makeMove(Integer gameID, String authToken, Session session, ChessMove move) {
+
+    }
 
     private void leave(Integer gameID, String authToken) throws DataAccessException, IOException {
         String username = authDAO.getAuth(authToken).username();

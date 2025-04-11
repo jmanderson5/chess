@@ -1,6 +1,5 @@
 package dataaccess;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 
@@ -119,12 +118,22 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public void updateGame(GameData gameData, String userColor) throws DataAccessException {
         if (userColor.equals("whiteUsername")) {
-            String statement = "UPDATE gameData SET whiteUsername = '" + gameData.whiteUsername() +
-                    "' WHERE gameID = " + gameData.gameID();
+            String statement;
+            if (gameData.whiteUsername() != null) {
+                statement = "UPDATE gameData SET whiteUsername = '" + gameData.whiteUsername() +
+                        "' WHERE gameID = " + gameData.gameID();
+            } else {
+                statement = "UPDATE gameData SET whiteUsername = NULL WHERE gameID = " + gameData.gameID();
+            }
             calculator.executeUpdate(statement);
         } else if (userColor.equals("blackUsername")) {
-            String statement = "UPDATE gameData SET blackUsername = '" + gameData.blackUsername() +
-                    "' WHERE gameID = " + gameData.gameID();
+            String statement;
+            if (gameData.blackUsername() != null) {
+                statement = "UPDATE gameData SET blackUsername = '" + gameData.blackUsername() +
+                        "' WHERE gameID = " + gameData.gameID();
+            } else {
+                statement = "UPDATE gameData SET blackUsername = NULL WHERE gameID = " + gameData.gameID();
+            }
             calculator.executeUpdate(statement);
         } else {
             throw new DataAccessException("Error: bad request");
