@@ -1,6 +1,9 @@
 package server.websocket;
 
+import chess.ChessBoard;
+import chess.ChessGame;
 import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
@@ -67,8 +70,31 @@ public class WebSocketHandler {
         }
     }
 
-    private void makeMove(Integer gameID, String authToken, Session session, ChessMove move) {
+    private void makeMove(Integer gameID, String authToken, Session session, ChessMove move) throws IOException {
+        ChessGame game;
+        String username;
 
+        try {
+            // update board
+            game = gameDAO.getGameByID(gameID).game();
+            username = authDAO.getAuth(authToken).username();
+            game.makeMove(move);
+
+            // send updated board
+            LoadGameMessage newBoard = new LoadGameMessage(game.getBoard());
+            connections.broadcast(gameID, username, newBoard);
+            connections.directMessage(gameID, username, newBoard);
+
+            // send notification
+            String message = String.format("%s made a move", username);
+            NotificationMessage notification = new NotificationMessage(message);
+            connections.broadcast(gameID, username, notification);
+
+        } catch (DataAccessException | InvalidMoveException | java.io.IOException e) {
+            String message = String.format("Error: %s", e.getMessage());
+            ErrorMessage errorNotification = new ErrorMessage(message);
+            connections.directMessageError(session, errorNotification);
+        }
     }
 
     private void leave(Integer gameID, String authToken) throws DataAccessException, IOException {

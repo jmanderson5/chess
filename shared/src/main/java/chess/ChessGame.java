@@ -142,7 +142,7 @@ public class ChessGame {
             // is the game in check now?
             if (isInCheck(teamTurn)) {
                 undoMove(move, ogPiece, capturedPiece);
-                throw new InvalidMoveException();
+                throw new InvalidMoveException("game is in check");
             }
             // switch team color if move is valid
             if (teamTurn == TeamColor.BLACK) {
@@ -151,7 +151,7 @@ public class ChessGame {
                 setTeamTurn(TeamColor.BLACK);
             }
         } else {
-            throw new InvalidMoveException();
+            throw new InvalidMoveException("invalid move");
         }
     }
 

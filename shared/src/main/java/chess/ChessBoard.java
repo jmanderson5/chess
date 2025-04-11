@@ -70,11 +70,22 @@ public class ChessBoard {
         // Add second row pawns
         addPawns(2, TeamColor.WHITE);
 
+        // reset middle rows
+        resetHelper();
+
         // Add top row
         pieces(8, TeamColor.BLACK);
 
         // Add seventh row pawns
         addPawns(7, TeamColor.BLACK);
+    }
+
+    private void resetHelper() {
+        for (int row = 3; row <= 6; row++) {
+            for (int col = 1; col <= 8; col++) {
+                squares[row - 1][col - 1] = null;
+            }
+        }
     }
 
     private void addPawns(int row, TeamColor color) {
