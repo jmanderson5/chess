@@ -79,13 +79,16 @@ public class WebSocketHandler {
             // update board
             game = gameDAO.getGameByID(gameID);
             AuthData auth = authDAO.getAuth(authToken);
-            if (auth == null) {
-                String message = String.format("Error: %s", "Unauthorized");
-                ErrorMessage errorNotification = new ErrorMessage(message);
-                connections.directMessageError(session, errorNotification);
+
+            if (!verifyAuth(auth, session)) {
                 return;
             }
             username = auth.username();
+
+            if (!verfyPlayerTurn(game, username, session)) {
+                return;
+            }
+
             game.game().makeMove(move);
             if (Objects.equals(game.whiteUsername(), username)) {
                 GameData newGameWhite = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(),
@@ -113,6 +116,37 @@ public class WebSocketHandler {
             ErrorMessage errorNotification = new ErrorMessage(message);
             connections.directMessageError(session, errorNotification);
         }
+    }
+
+    private boolean verfyPlayerTurn(GameData game, String username, Session session) throws IOException {
+        // verify player's turn
+        ChessGame.TeamColor teamTurn = game.game().getTeamTurn();
+        if (teamTurn.equals(ChessGame.TeamColor.WHITE)) {
+            if (!username.equals(game.whiteUsername())) {
+                String message = String.format("Error: %s", "not your turn");
+                ErrorMessage errorNotification = new ErrorMessage(message);
+                connections.directMessageError(session, errorNotification);
+                return false;
+            }
+        } else {
+            if (!username.equals(game.blackUsername())) {
+                String message = String.format("Error: %s", "not your turn");
+                ErrorMessage errorNotification = new ErrorMessage(message);
+                connections.directMessageError(session, errorNotification);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private Boolean verifyAuth(AuthData auth, Session session) throws IOException {
+        if (auth == null) {
+            String message = String.format("Error: %s", "Unauthorized");
+            ErrorMessage errorNotification = new ErrorMessage(message);
+            connections.directMessageError(session, errorNotification);
+            return false;
+        }
+        return true;
     }
 
     private void leave(Integer gameID, String authToken) throws DataAccessException, IOException {
