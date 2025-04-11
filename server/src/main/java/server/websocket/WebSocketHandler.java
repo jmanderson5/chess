@@ -45,6 +45,8 @@ public class WebSocketHandler {
             game = gameDAO.getGameByID(gameID);
             if (game == null) {
                 throw new DataAccessException("Game does not exist");
+            } else if (authDAO.getAuth(authToken) == null) {
+                throw new DataAccessException("Unauthorized");
             }
             connections.add(gameID, authDAO.getAuth(authToken).username(), session);
             String message = String.format("%s join the game as %s", authDAO.getAuth(authToken).username(), authToken);
@@ -53,7 +55,7 @@ public class WebSocketHandler {
         } catch (DataAccessException | IOException e) {
             String message = String.format("Error: %s", e.getMessage());
             ErrorMessage errorNotification = new ErrorMessage(message);
-            connections.directMessageError(session, authDAO.getAuth(authToken).username(), errorNotification);
+            connections.directMessageError(session, errorNotification);
             return;
         }
         try {

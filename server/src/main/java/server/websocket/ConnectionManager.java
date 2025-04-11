@@ -68,13 +68,8 @@ public class ConnectionManager {
         }
     }
 
-    public void directMessageError(Session newSession, String username, ErrorMessage notification) throws IOException {
-        Connection connection = new Connection(username, newSession);
-
-        if (connection.session.isOpen() && connection.visitorName.equals(username)) {
-            if (notification.getMessage() != null) {
-                connection.send(new Gson().toJson(notification));
-            }
-        }
+    public void directMessageError(Session newSession, ErrorMessage notification) throws IOException {
+        Connection connection = new Connection("username", newSession);
+        connection.send(new Gson().toJson(notification));
     }
 }
