@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
+import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -77,7 +78,14 @@ public class WebSocketHandler {
         try {
             // update board
             game = gameDAO.getGameByID(gameID);
-            username = authDAO.getAuth(authToken).username();
+            AuthData auth = authDAO.getAuth(authToken);
+            if (auth == null) {
+                String message = String.format("Error: %s", "Unauthorized");
+                ErrorMessage errorNotification = new ErrorMessage(message);
+                connections.directMessageError(session, errorNotification);
+                return;
+            }
+            username = auth.username();
             game.game().makeMove(move);
             if (Objects.equals(game.whiteUsername(), username)) {
                 GameData newGameWhite = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(),
