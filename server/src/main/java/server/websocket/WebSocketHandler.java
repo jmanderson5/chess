@@ -1,6 +1,5 @@
 package server.websocket;
 
-import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.InvalidMoveException;
@@ -40,7 +39,7 @@ public class WebSocketHandler {
             case CONNECT -> connect(action.getGameID(), action.getAuthToken(), session);
             case MAKE_MOVE -> makeMove(action.getGameID(), action.getAuthToken(), session, action.getMove());
             case LEAVE -> leave(action.getGameID(), action.getAuthToken());
-            case RESIGN -> resign();
+            case RESIGN -> resign(action.getGameID(), action.getAuthToken());
         }
     }
 
@@ -85,7 +84,7 @@ public class WebSocketHandler {
             }
             username = auth.username();
 
-            if (!verfyPlayerTurn(game, username, session)) {
+            if (!verifyPlayerTurn(game, username, session)) {
                 return;
             }
 
@@ -118,7 +117,7 @@ public class WebSocketHandler {
         }
     }
 
-    private boolean verfyPlayerTurn(GameData game, String username, Session session) throws IOException {
+    private boolean verifyPlayerTurn(GameData game, String username, Session session) throws IOException {
         // verify player's turn
         ChessGame.TeamColor teamTurn = game.game().getTeamTurn();
         if (teamTurn.equals(ChessGame.TeamColor.WHITE)) {
@@ -171,5 +170,12 @@ public class WebSocketHandler {
         }
     }
 
-    private void resign() {}
+    private void resign(Integer gameID, String authToken) throws DataAccessException, IOException {
+        String username = authDAO.getAuth(authToken).username();
+
+        String message = String.format("%s resigned", username);
+        NotificationMessage notification = new NotificationMessage(message);
+        connections.directMessage(gameID, username, notification);
+        connections.broadcast(gameID, username, notification);
+    }
 }
