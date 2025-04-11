@@ -39,7 +39,7 @@ public class WebSocketHandler {
             case CONNECT -> connect(action.getGameID(), action.getAuthToken(), session);
             case MAKE_MOVE -> makeMove(action.getGameID(), action.getAuthToken(), session, action.getMove());
             case LEAVE -> leave(action.getGameID(), action.getAuthToken());
-            case RESIGN -> resign(action.getGameID(), action.getAuthToken());
+            case RESIGN -> resign(action.getGameID(), action.getAuthToken(), session);
         }
     }
 
@@ -170,12 +170,35 @@ public class WebSocketHandler {
         }
     }
 
-    private void resign(Integer gameID, String authToken) throws DataAccessException, IOException {
+    private void resign(Integer gameID, String authToken, Session session) throws DataAccessException, IOException {
         String username = authDAO.getAuth(authToken).username();
+        GameData game = gameDAO.getGameByID(gameID);
+
+        if (!verifyPlayer(game, username, session)) {
+            return;
+        }
+
+        // remove players from game
+        String usernames = null;
+        GameData newGame = new GameData(game.gameID(), usernames, usernames, game.gameName(), game.game());
+        gameDAO.updateGame(newGame, "whiteUsername");
+        gameDAO.updateGame(newGame, "blackUsername");
 
         String message = String.format("%s resigned", username);
         NotificationMessage notification = new NotificationMessage(message);
         connections.directMessage(gameID, username, notification);
         connections.broadcast(gameID, username, notification);
+    }
+
+    private boolean verifyPlayer(GameData game, String username, Session session) throws IOException {
+        // verify user is a player
+        if (username.equals(game.whiteUsername()) || username.equals(game.blackUsername())) {
+            return true;
+        } else {
+            String message = String.format("Error: %s is not a player. cannot resign", username);
+            ErrorMessage errorNotification = new ErrorMessage(message);
+            connections.directMessageError(session, errorNotification);
+            return false;
+        }
     }
 }
