@@ -9,13 +9,12 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
-import websocket.messages.ServerMessage;
 
 import java.io.IOException;
-
-import static websocket.commands.UserGameCommand.CommandType.*;
+import java.util.Objects;
 
 @WebSocket
 public class WebSocketHandler {
@@ -35,28 +34,59 @@ public class WebSocketHandler {
         switch (action.getCommandType()) {
             case CONNECT -> connect(action.getGameID(), action.getAuthToken(), session);
             case MAKE_MOVE -> makeMove();
-            case LEAVE -> leave();
+            case LEAVE -> leave(action.getGameID(), action.getAuthToken());
             case RESIGN -> resign();
         }
     }
 
-    private void connect(Integer gameID, String authToken, Session session) throws IOException, DataAccessException {
-        connections.add(gameID, authDAO.getAuth(authToken).username(), session);
-        var message = String.format("%s join the game as %s", authToken, authToken);
-        NotificationMessage notification = new NotificationMessage(message);
-        connections.broadcast(gameID, authDAO.getAuth(authToken).username(), notification);
+    private void connect(Integer gameID, String authToken, Session session) throws DataAccessException, IOException {
+        GameData game;
         try {
-            GameData game = gameDAO.getGameByID(gameID);
+            game = gameDAO.getGameByID(gameID);
+            if (game == null) {
+                throw new DataAccessException("Game does not exist");
+            }
+            connections.add(gameID, authDAO.getAuth(authToken).username(), session);
+            String message = String.format("%s join the game as %s", authDAO.getAuth(authToken).username(), authToken);
+            NotificationMessage notification = new NotificationMessage(message);
+            connections.broadcast(gameID, authDAO.getAuth(authToken).username(), notification);
+        } catch (DataAccessException | IOException e) {
+            String message = String.format("Error: %s", e.getMessage());
+            ErrorMessage errorNotification = new ErrorMessage(message);
+            connections.directMessageError(session, authDAO.getAuth(authToken).username(), errorNotification);
+            return;
+        }
+        try {
             LoadGameMessage gameNotification = new LoadGameMessage(game.game().getBoard());
             connections.directMessage(gameID, authDAO.getAuth(authToken).username(), gameNotification);
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | java.io.IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private void makeMove() {}
 
-    private void leave() {}
+    private void leave(Integer gameID, String authToken) throws DataAccessException, IOException {
+        String username = authDAO.getAuth(authToken).username();
+        GameData game = gameDAO.getGameByID(gameID);
+
+        connections.remove(gameID, username);
+        String message = String.format("%s left the game", username);
+        NotificationMessage notification = new NotificationMessage(message);
+        connections.broadcast(gameID, username, notification);
+
+        // remove player from game
+        if (Objects.equals(game.whiteUsername(), username)) {
+            GameData newGameWhite = new GameData(game.gameID(), null, game.blackUsername(),
+                    game.gameName(), game.game());
+            gameDAO.updateGame(newGameWhite, "whiteUsername");
+        }
+        if (Objects.equals(game.blackUsername(), username)) {
+            GameData newGameBlack = new GameData(game.gameID(), game.whiteUsername(), null,
+                    game.gameName(), game.game());
+            gameDAO.updateGame(newGameBlack, "blackUsername");
+        }
+    }
 
     private void resign() {}
 }

@@ -2,7 +2,7 @@ package server.websocket;
 
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
-import websocket.messages.LoadGameMessage;
+import websocket.messages.ErrorMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
@@ -65,6 +65,16 @@ public class ConnectionManager {
         // Clean up any connections that were left open.
         for (Connection connection : removeList) {
             connections.get(gameID).remove(connection.visitorName);
+        }
+    }
+
+    public void directMessageError(Session newSession, String username, ErrorMessage notification) throws IOException {
+        Connection connection = new Connection(username, newSession);
+
+        if (connection.session.isOpen() && connection.visitorName.equals(username)) {
+            if (notification.getMessage() != null) {
+                connection.send(new Gson().toJson(notification));
+            }
         }
     }
 }
