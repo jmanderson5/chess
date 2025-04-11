@@ -71,17 +71,27 @@ public class WebSocketHandler {
     }
 
     private void makeMove(Integer gameID, String authToken, Session session, ChessMove move) throws IOException {
-        ChessGame game;
+        GameData game;
         String username;
 
         try {
             // update board
-            game = gameDAO.getGameByID(gameID).game();
+            game = gameDAO.getGameByID(gameID);
             username = authDAO.getAuth(authToken).username();
-            game.makeMove(move);
+            game.game().makeMove(move);
+            if (Objects.equals(game.whiteUsername(), username)) {
+                GameData newGameWhite = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(),
+                        game.gameName(), game.game());
+                gameDAO.updateGame(newGameWhite, "whiteUsername");
+            }
+            if (Objects.equals(game.blackUsername(), username)) {
+                GameData newGameBlack = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(),
+                        game.gameName(), game.game());
+                gameDAO.updateGame(newGameBlack, "blackUsername");
+            }
 
             // send updated board
-            LoadGameMessage newBoard = new LoadGameMessage(game.getBoard());
+            LoadGameMessage newBoard = new LoadGameMessage(game.game().getBoard());
             connections.broadcast(gameID, username, newBoard);
             connections.directMessage(gameID, username, newBoard);
 
