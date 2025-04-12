@@ -10,6 +10,7 @@ import java.util.List;
 public class PostLogin {
 
     private ServerFacade serverFacade;
+    private boolean inGame = false;
 
     public boolean run(String input, ServerFacade serverFacade) {
         this.serverFacade = serverFacade;
@@ -119,6 +120,7 @@ public class PostLogin {
             for (GameDataShort gameData : games) {
                 if (gameNumber.equals(game)) {
                     serverFacade.joinGame(playerColor, gameData.gameID());
+                    inGame = true;
                 }
                 gameNumber ++;
             }
@@ -182,13 +184,24 @@ public class PostLogin {
     }
 
     private void help() {
-        writeHelpText("create <NAME>", " - a game");
-        writeHelpText("list", " - games");
-        writeHelpText("join <ID> [WHITE|BLACK]", " - a game");
-        writeHelpText("observe", " - a game");
-        writeHelpText("logout", " - when you are done");
-        writeHelpText("quit", " - playing chess");
-        writeHelpText("help", " - with possible commands");
+        if (!inGame) {
+            writeHelpText("create <NAME>", " - a game");
+            writeHelpText("list", " - games");
+            writeHelpText("join <ID> [WHITE|BLACK]", " - a game");
+            writeHelpText("observe", " - a game");
+            writeHelpText("logout", " - when you are done");
+            writeHelpText("quit", " - playing chess");
+            writeHelpText("help", " - with possible commands");
+        } else {
+            writeHelpText("redraw", " - chessboard");
+            writeHelpText("leave", " - chess game");
+            writeHelpText("move #,# to #,#", " - to make move");
+            writeHelpText("resign", " - from chess game");
+            writeHelpText("highlight", " - legal moves");
+            writeHelpText("logout", " - when you are done");
+            writeHelpText("quit", " - playing chess");
+            writeHelpText("help", " - with possible commands");
+        }
         System.out.println(EscapeSequences.RESET_TEXT_COLOR);
     }
 
