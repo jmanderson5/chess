@@ -11,7 +11,6 @@ import java.util.Scanner;
 public class PostLogin {
 
     private ServerFacade serverFacade;
-    private boolean inGame = false;
 
     public boolean run(String input, ServerFacade serverFacade) {
         this.serverFacade = serverFacade;
@@ -20,12 +19,7 @@ public class PostLogin {
         String[] parts = input.split(" ");
         if (parts.length == 2 && parts[0].equals("create")) { create(parts[1]); }
         else if (parts.length == 1 && parts[0].equals("list")) { list(); }
-        else if (parts.length == 3 && parts[0].equals("join")) {
-            join(parts[1], parts[2]);
-            Scanner scanner = new Scanner(System.in);
-            InGameUi inGameUi = new InGameUi();
-            inGameUi.run(scanner.nextLine(), serverFacade);
-        }
+        else if (parts.length == 3 && parts[0].equals("join")) { join(parts[1], parts[2]); }
         else if (parts.length == 2 && parts[0].equals("observe")) { observe(parts[1]); }
         else if (parts.length == 1 && parts[0].equals("logout")) { loggedIn = logout(); }
         else if (parts.length == 1 && parts[0].equals("help")) { help(); }
@@ -38,20 +32,7 @@ public class PostLogin {
         return loggedIn;
     }
 
-    private boolean inGameCheck() {
-        if (inGame) {
-            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
-            System.out.print("unsuccessful: try again");
-            System.out.println(EscapeSequences.RESET_TEXT_COLOR);
-            return true;
-        }
-        return false;
-    }
-
     private void create(String game) {
-        if (inGameCheck()) {
-            return;
-        }
         boolean created = false;
         Games gamesRecord = null;
 
@@ -93,9 +74,6 @@ public class PostLogin {
     }
 
     private void list() {
-        if (inGameCheck()) {
-            return;
-        }
         boolean listed = false;
         Games gamesRecord = null;
 
@@ -125,9 +103,6 @@ public class PostLogin {
     }
 
     private void join(String gameID, String playerColor) {
-        if (inGameCheck()) {
-            return;
-        }
         Integer game;
         try {
             game = Integer.parseInt(gameID);
@@ -147,7 +122,10 @@ public class PostLogin {
             for (GameDataShort gameData : games) {
                 if (gameNumber.equals(game)) {
                     serverFacade.joinGame(playerColor, gameData.gameID());
-                    inGame = true;
+                    // enter InGameUi
+                    Scanner scanner = new Scanner(System.in);
+                    InGameUi inGameUi = new InGameUi();
+                    inGameUi.run(scanner.nextLine(), serverFacade);
                 }
                 gameNumber ++;
             }
@@ -159,45 +137,11 @@ public class PostLogin {
     }
 
     private void observe(String gameID) {
-        if (inGameCheck()) {
-            return;
-        }
-        Integer game;
-        try {
-            game = Integer.parseInt(gameID);
-        } catch (NumberFormatException e) {
-            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
-            System.out.println("Error: User error. Input gameID as int.");
-            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
-
-            return;
-        }
-        Games gamesRecord = null;
-
-        // get game number
-        try {
-            gamesRecord = serverFacade.listGames();
-        } catch (ResponseException e) {
-            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
-            System.out.println(e.getMessage());
-            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
-        }
-
-        assert gamesRecord != null;
-        List<GameDataShort> games = gamesRecord.games();
-        Integer gameNumber = 1;
-        for (GameDataShort gameData : games) {
-            if (game.equals(gameNumber)) {
-            }
-            gameNumber ++;
-        }
+        serverFacade.observeGame(gameID);
     }
 
     private boolean logout() {
         boolean loggedIn = true;
-        if (inGameCheck()) {
-            return loggedIn;
-        }
 
         try {
             serverFacade.logout();
@@ -218,26 +162,15 @@ public class PostLogin {
     }
 
     private void help() {
-        if (!inGame) {
-            writeHelpText("create <NAME>", " - a game");
-            writeHelpText("list", " - games");
-            writeHelpText("join <ID> [WHITE|BLACK]", " - a game");
-            writeHelpText("observe", " - a game");
-            writeHelpText("logout", " - when you are done");
-            writeHelpText("quit", " - playing chess");
-            writeHelpText("help", " - with possible commands");
-            System.out.println(EscapeSequences.RESET_TEXT_COLOR);
-            System.out.print("[LOGGED IN] >>> ");
-        } else {
-            writeHelpText("redraw", " - chessboard");
-            writeHelpText("leave", " - chess game");
-            writeHelpText("move #,# to #,#", " - to make move");
-            writeHelpText("resign", " - from chess game");
-            writeHelpText("highlight", " - legal moves");
-            writeHelpText("help", " - with possible commands");
-            System.out.println(EscapeSequences.RESET_TEXT_COLOR);
-            System.out.print("[IN GAME] >>> ");
-        }
+        writeHelpText("create <NAME>", " - a game");
+        writeHelpText("list", " - games");
+        writeHelpText("join <ID> [WHITE|BLACK]", " - a game");
+        writeHelpText("observe", " - a game");
+        writeHelpText("logout", " - when you are done");
+        writeHelpText("quit", " - playing chess");
+        writeHelpText("help", " - with possible commands");
+        System.out.println(EscapeSequences.RESET_TEXT_COLOR);
+        System.out.print("[LOGGED IN] >>> ");
     }
 
     private void writeHelpText(String command, String description) {

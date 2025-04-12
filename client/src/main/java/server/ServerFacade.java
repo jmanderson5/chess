@@ -69,6 +69,10 @@ public class ServerFacade {
         websocketCommunicator.connect(gameID);
     }
 
+    public void observeGame(String gameID) {
+
+    }
+
     public void makeMove(String userColor, Integer gameID) {
 
     }
