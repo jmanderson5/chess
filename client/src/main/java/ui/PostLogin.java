@@ -125,7 +125,7 @@ public class PostLogin {
                     // enter InGameUi
                     Scanner scanner = new Scanner(System.in);
                     InGameUi inGameUi = new InGameUi();
-                    inGameUi.run(scanner.nextLine(), serverFacade);
+                    inGameUi.run(scanner.nextLine(), serverFacade, gameData.gameID(), playerColor);
                 }
                 gameNumber ++;
             }
@@ -160,7 +160,7 @@ public class PostLogin {
                     // enter InGameUi
                     Scanner scanner = new Scanner(System.in);
                     InGameUi inGameUi = new InGameUi();
-                    inGameUi.run(scanner.nextLine(), serverFacade);
+                    inGameUi.run(scanner.nextLine(), serverFacade, gameData.gameID(), "WHITE");
                 }
                 gameNumber ++;
             }

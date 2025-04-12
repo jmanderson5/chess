@@ -17,6 +17,7 @@ public class WebsocketCommunicator extends Endpoint {
 
     Session session;
     String authToken;
+    String playerColor;
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
@@ -48,7 +49,8 @@ public class WebsocketCommunicator extends Endpoint {
         }
     }
 
-    public void connect(Integer gameID) throws ResponseException {
+    public void connect(Integer gameID, String playerColor) throws ResponseException {
+        this.playerColor = playerColor;
         try {
             UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
@@ -60,7 +62,7 @@ public class WebsocketCommunicator extends Endpoint {
     public void loadGame(LoadGameMessage serverMessage) {
         Board board = new Board();
         ChessBoard game = serverMessage.getGame().game().getBoard();
-        board.drawBoard(game, "WHITE");
+        board.drawBoard(game, playerColor);
         System.out.print("[IN GAME] >>> ");
     }
 

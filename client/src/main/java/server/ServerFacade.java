@@ -64,18 +64,16 @@ public class ServerFacade {
         var path = "/game";
         httpCommunicator.makeRequest("PUT", path, new JoinGameData(userColor, gameID), null);
         // connect to WebSocket
-        websocketCommunicator = new WebsocketCommunicator(serverUrl);
         websocketCommunicator.setAuthToken(authToken);
-        websocketCommunicator.connect(gameID);
+        websocketCommunicator.connect(gameID, userColor);
     }
 
     public void observeGame(Integer gameID) throws ResponseException {
-        websocketCommunicator = new WebsocketCommunicator(serverUrl);
         websocketCommunicator.setAuthToken(authToken);
-        websocketCommunicator.connect(gameID);
+        websocketCommunicator.connect(gameID, "WHITE");
     }
 
-    public void makeMove(String userColor, Integer gameID) {
-
+    public void redraw(Integer gameID, String playColor) throws ResponseException {
+        websocketCommunicator.connect(gameID, playColor);
     }
 }

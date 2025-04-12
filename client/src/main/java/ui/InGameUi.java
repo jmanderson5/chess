@@ -1,5 +1,6 @@
 package ui;
 
+import exception.ResponseException;
 import server.ServerFacade;
 
 import java.util.Scanner;
@@ -9,10 +10,15 @@ public class InGameUi {
     private boolean inGame = true;
     private String input;
     private ServerFacade serverFacade;
+    Integer gameID;
+    String playerColor;
 
-    public void run(String input, ServerFacade serverFacade) {
+    public void run(String input, ServerFacade serverFacade, Integer gameID, String playerColor)
+            throws ResponseException {
         this.input = input;
         this.serverFacade = serverFacade;
+        this.gameID = gameID;
+        this.playerColor = playerColor;
 
         while (inGame) {
             String[] parts = this.input.split(" ");
@@ -31,8 +37,8 @@ public class InGameUi {
         }
     }
 
-    private void redraw() {
-        System.out.print("[IN GAME] >>> ");
+    private void redraw() throws ResponseException {
+        serverFacade.redraw(gameID, playerColor);
     }
 
     private void leave() {
