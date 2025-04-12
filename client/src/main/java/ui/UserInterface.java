@@ -8,6 +8,7 @@ public class UserInterface {
 
     private boolean loggedIn = false;
     private boolean exit = false;
+    private boolean inGame = false;
 
     public void run(ServerFacade serverFacade) {
         PreLogin preLogin = new PreLogin();
@@ -22,7 +23,7 @@ public class UserInterface {
                 } else {
                     loggedIn = preLogin.run(input, serverFacade);
                 }
-            } else {
+            } else if (!inGame) {
                 System.out.print("[LOGGED IN] >>> ");
                 String input = getInput();
                 if (input.equals("quit")) {

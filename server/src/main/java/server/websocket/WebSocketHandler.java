@@ -1,5 +1,6 @@
 package server.websocket;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.InvalidMoveException;
@@ -63,7 +64,7 @@ public class WebSocketHandler {
             return;
         }
         try {
-            LoadGameMessage gameNotification = new LoadGameMessage(game.game().getBoard());
+            LoadGameMessage gameNotification = new LoadGameMessage(game);
             connections.directMessage(gameID, authDAO.getAuth(authToken).username(), gameNotification);
         } catch (DataAccessException | java.io.IOException e) {
             throw new RuntimeException(e);
@@ -101,7 +102,7 @@ public class WebSocketHandler {
             }
 
             // send updated board
-            LoadGameMessage newBoard = new LoadGameMessage(game.game().getBoard());
+            LoadGameMessage newBoard = new LoadGameMessage(game);
             connections.broadcast(gameID, username, newBoard);
             connections.directMessage(gameID, username, newBoard);
 

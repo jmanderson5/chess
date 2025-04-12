@@ -1,8 +1,11 @@
 package server;
 
+import chess.ChessBoard;
 import com.google.gson.Gson;
 import exception.ResponseException;
+import ui.Board;
 import websocket.commands.UserGameCommand;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.ServerMessage;
 
 import javax.websocket.*;
@@ -10,11 +13,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static java.awt.Color.GREEN;
-import static java.awt.Color.RED;
-import static org.glassfish.grizzly.Interceptor.RESET;
-
-public class WebsocketCommunicator {
+public class WebsocketCommunicator extends Endpoint {
 
     Session session;
     String authToken;
@@ -35,23 +34,18 @@ public class WebsocketCommunicator {
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
-                    ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
-                    notifyUsers(notification);
+                    ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+                    switch (serverMessage.getServerMessageType()) {
+                        case LOAD_GAME -> loadGame(new Gson().fromJson(message, LoadGameMessage.class));
+                        case ERROR -> error();
+                        case NOTIFICATION -> notification();
+                    }
                 }
             });
+
         } catch (DeploymentException | IOException | URISyntaxException ex) {
-            throw new ResponseException(500, ex.getMessage());
+            System.out.println("Websocket Communicator Error");
         }
-    }
-
-    private void notifyUsers(ServerMessage notification) {
-        System.out.print(RED);
-        System.out.println(notification.getServerMessageType());
-        printPrompt();
-    }
-
-    private void printPrompt() {
-        System.out.print("\n" + RESET + ">>> " + GREEN);
     }
 
     public void connect(Integer gameID) throws ResponseException {
@@ -61,5 +55,24 @@ public class WebsocketCommunicator {
         } catch (IOException ex) {
             throw new ResponseException(500, ex.getMessage());
         }
+    }
+
+    private void loadGame(LoadGameMessage serverMessage) {
+        Board board = new Board();
+        ChessBoard game = serverMessage.getGame().game().getBoard();
+        board.drawBoard(game, "WHITE");
+    }
+
+    private void error() {
+
+    }
+
+    private void notification() {
+
+    }
+
+    @Override
+    public void onOpen(Session session, EndpointConfig endpointConfig) {
+
     }
 }

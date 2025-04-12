@@ -6,16 +6,16 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 
 public class Board {
-    public void drawBoard(String playerColor, Integer gameID) {
+    public void drawBoard(ChessBoard board, String playerColor) {
         ChessBoard chessBoard = new ChessBoard();
         chessBoard.resetBoard();
 
         if (playerColor.equals("WHITE")) {
             // draw white board perspective
-            whiteBoard(chessBoard);
+            whiteBoard(board);
         } else {
             // draw black board perspective
-            blackBoard(chessBoard);
+            blackBoard(board);
         }
     }
 

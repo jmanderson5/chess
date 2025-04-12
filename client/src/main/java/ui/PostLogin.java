@@ -100,8 +100,6 @@ public class PostLogin {
     }
 
     private void join(String gameID, String playerColor) {
-        boolean joined = false;
-        boolean gameExists = false;
         Integer game;
         try {
             game = Integer.parseInt(gameID);
@@ -121,24 +119,12 @@ public class PostLogin {
             for (GameDataShort gameData : games) {
                 if (gameNumber.equals(game)) {
                     serverFacade.joinGame(playerColor, gameData.gameID());
-                    gameExists = true;
                 }
                 gameNumber ++;
             }
-            joined = true;
         } catch (ResponseException e) {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
             System.out.println(e.getMessage());
-            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
-            gameExists = true;
-        }
-
-        if (joined && gameExists) {
-            Board board = new Board();
-            board.drawBoard(playerColor, game);
-        } else {
-            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
-            System.out.println("Game does not exist");
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
         }
     }
@@ -154,7 +140,6 @@ public class PostLogin {
 
             return;
         }
-        boolean gameExists = false;
         Games gamesRecord = null;
 
         // get game number
@@ -171,18 +156,8 @@ public class PostLogin {
         Integer gameNumber = 1;
         for (GameDataShort gameData : games) {
             if (game.equals(gameNumber)) {
-                gameExists = true;
             }
             gameNumber ++;
-        }
-
-        if (gameExists) {
-            Board board = new Board();
-            board.drawBoard("WHITE", 1234);
-        } else {
-            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
-            System.out.println("Error: Game does not exist");
-            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
         }
     }
 
