@@ -38,6 +38,7 @@ public class UserInterface {
                 if (input != null && input.equals("quit")) {
                     exit = true;
                 } else {
+                    assert input != null;
                     loggedIn = postLogin.run(input, serverFacade);
                     input = getInput();
                 }

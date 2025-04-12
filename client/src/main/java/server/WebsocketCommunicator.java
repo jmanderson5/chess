@@ -1,11 +1,14 @@
 package server;
 
 import chess.ChessBoard;
+import chess.ChessMove;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import ui.Board;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import javax.websocket.*;
@@ -16,20 +19,23 @@ import java.net.URISyntaxException;
 public class WebsocketCommunicator extends Endpoint {
 
     Session session;
+
     String authToken;
     String playerColor;
+    NotificationHandler notificationHandler;
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
 
-    public WebsocketCommunicator(String url) throws ResponseException {
+    public WebsocketCommunicator(String url, NotificationHandler notificationHandler) throws ResponseException {
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/ws");
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, socketURI);
+            this.notificationHandler = notificationHandler;
 
             //set message handler
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
@@ -37,13 +43,12 @@ public class WebsocketCommunicator extends Endpoint {
                 public void onMessage(String message) {
                     ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
                     switch (serverMessage.getServerMessageType()) {
-                        case LOAD_GAME -> loadGame(new Gson().fromJson(message, LoadGameMessage.class));
-                        case ERROR -> error();
-                        case NOTIFICATION -> notification();
+                        case LOAD_GAME -> notificationHandler.loadGame(new Gson().fromJson(message, LoadGameMessage.class));
+                        case ERROR -> notificationHandler.error();
+                        case NOTIFICATION -> notificationHandler.notification();
                     }
                 }
             });
-
         } catch (DeploymentException | IOException | URISyntaxException ex) {
             System.out.println("Websocket Communicator Error");
         }
@@ -68,19 +73,14 @@ public class WebsocketCommunicator extends Endpoint {
         }
     }
 
-    private void loadGame(LoadGameMessage serverMessage) {
-        Board board = new Board();
-        ChessBoard game = serverMessage.getGame().game().getBoard();
-        board.drawBoard(game, playerColor);
-        System.out.print("[IN GAME] >>> ");
-    }
-
-    private void error() {
-
-    }
-
-    private void notification() {
-
+    public void makeMove(Integer gameID, ChessMove move) throws ResponseException {
+        try {
+            MakeMoveCommand command = new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE,
+                    authToken, gameID, move);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
     }
 
     @Override

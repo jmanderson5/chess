@@ -3,6 +3,7 @@ package ui;
 import exception.ResponseException;
 import model.handler.GameDataShort;
 import model.handler.Games;
+import server.NotificationHandler;
 import server.ServerFacade;
 
 import java.util.List;
@@ -123,9 +124,12 @@ public class PostLogin {
                 if (gameNumber.equals(game)) {
                     serverFacade.joinGame(playerColor, gameData.gameID());
                     // enter InGameUi
+                    System.out.println("[IN GAME]");
+                    System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+                    System.out.println("type help for in game commands");
+                    System.out.print(EscapeSequences.RESET_TEXT_COLOR);
                     Scanner scanner = new Scanner(System.in);
-                    InGameUi inGameUi = new InGameUi();
-                    inGameUi.run(scanner.nextLine(), serverFacade, gameData.gameID(), playerColor);
+                    new InGameUi().run(scanner.nextLine(), serverFacade, gameData.gameID(), playerColor);
                 }
                 gameNumber ++;
             }
@@ -158,6 +162,10 @@ public class PostLogin {
                 if (gameNumber.equals(game)) {
                     serverFacade.observeGame(gameData.gameID());
                     // enter InGameUi
+                    System.out.println("[IN GAME]");
+                    System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+                    System.out.println("type help for in game commands");
+                    System.out.print(EscapeSequences.RESET_TEXT_COLOR);
                     Scanner scanner = new Scanner(System.in);
                     InGameUi inGameUi = new InGameUi();
                     inGameUi.run(scanner.nextLine(), serverFacade, gameData.gameID(), "WHITE");
