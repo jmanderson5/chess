@@ -73,7 +73,11 @@ public class ServerFacade {
         websocketCommunicator.connect(gameID, "WHITE");
     }
 
-    public void redraw(Integer gameID, String playColor) throws ResponseException {
-        websocketCommunicator.connect(gameID, playColor);
+    public void redraw(Integer gameID, String playerColor) throws ResponseException {
+        websocketCommunicator.connect(gameID, playerColor);
+    }
+
+    public void leave(Integer gameID) throws ResponseException {
+        websocketCommunicator.disconnect(gameID);
     }
 }

@@ -59,7 +59,16 @@ public class WebsocketCommunicator extends Endpoint {
         }
     }
 
-    public void loadGame(LoadGameMessage serverMessage) {
+    public void disconnect(Integer gameID) throws ResponseException {
+        try {
+            UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    private void loadGame(LoadGameMessage serverMessage) {
         Board board = new Board();
         ChessBoard game = serverMessage.getGame().game().getBoard();
         board.drawBoard(game, playerColor);

@@ -41,8 +41,9 @@ public class InGameUi {
         serverFacade.redraw(gameID, playerColor);
     }
 
-    private void leave() {
+    private void leave() throws ResponseException {
         System.out.print("[LOGGED IN] >>> ");
+        serverFacade.leave(gameID);
         inGame = false;
     }
 
