@@ -69,8 +69,10 @@ public class ServerFacade {
         websocketCommunicator.connect(gameID);
     }
 
-    public void observeGame(String gameID) {
-
+    public void observeGame(Integer gameID) throws ResponseException {
+        websocketCommunicator = new WebsocketCommunicator(serverUrl);
+        websocketCommunicator.setAuthToken(authToken);
+        websocketCommunicator.connect(gameID);
     }
 
     public void makeMove(String userColor, Integer gameID) {

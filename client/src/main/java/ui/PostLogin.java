@@ -137,7 +137,38 @@ public class PostLogin {
     }
 
     private void observe(String gameID) {
-        serverFacade.observeGame(gameID);
+        Integer game;
+
+        try {
+            game = Integer.parseInt(gameID);
+        } catch (NumberFormatException e) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Error: User error. Input gameID as int.");
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+
+            return;
+        }
+
+        try {
+            Games gamesRecord = serverFacade.listGames();
+            List<GameDataShort> games = gamesRecord.games();
+
+            Integer gameNumber = 1;
+            for (GameDataShort gameData : games) {
+                if (gameNumber.equals(game)) {
+                    serverFacade.observeGame(gameData.gameID());
+                    // enter InGameUi
+                    Scanner scanner = new Scanner(System.in);
+                    InGameUi inGameUi = new InGameUi();
+                    inGameUi.run(scanner.nextLine(), serverFacade);
+                }
+                gameNumber ++;
+            }
+        } catch (ResponseException e) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println(e.getMessage());
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        }
     }
 
     private boolean logout() {

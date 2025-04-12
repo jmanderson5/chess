@@ -4,7 +4,6 @@ import chess.ChessBoard;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import ui.Board;
-import ui.EscapeSequences;
 import websocket.commands.UserGameCommand;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.ServerMessage;
