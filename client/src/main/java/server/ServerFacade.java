@@ -69,7 +69,7 @@ public class ServerFacade {
         websocketCommunicator.connect(gameID);
     }
 
-    public void makeMove() {
+    public void makeMove(String userColor, Integer gameID) {
 
     }
 }

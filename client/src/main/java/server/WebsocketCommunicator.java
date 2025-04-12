@@ -4,6 +4,7 @@ import chess.ChessBoard;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import ui.Board;
+import ui.EscapeSequences;
 import websocket.commands.UserGameCommand;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.ServerMessage;
@@ -57,10 +58,11 @@ public class WebsocketCommunicator extends Endpoint {
         }
     }
 
-    private void loadGame(LoadGameMessage serverMessage) {
+    public void loadGame(LoadGameMessage serverMessage) {
         Board board = new Board();
         ChessBoard game = serverMessage.getGame().game().getBoard();
         board.drawBoard(game, "WHITE");
+        System.out.print("[IN GAME] >>> ");
     }
 
     private void error() {

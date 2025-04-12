@@ -8,28 +8,42 @@ public class UserInterface {
 
     private boolean loggedIn = false;
     private boolean exit = false;
-    private boolean inGame = false;
+    private boolean initialLogin = true;
+    String input = null;
 
     public void run(ServerFacade serverFacade) {
         PreLogin preLogin = new PreLogin();
         PostLogin postLogin = new PostLogin();
+        System.out.print("[LOGGED OUT] >>> ");
+        input = getInput();
 
         while (!exit) {
             if (!loggedIn) {
-                System.out.print("[LOGGED OUT] >>> ");
-                String input = getInput();
                 if (input.equals("quit")) {
                     exit = true;
                 } else {
                     loggedIn = preLogin.run(input, serverFacade);
                 }
-            } else if (!inGame) {
-                System.out.print("[LOGGED IN] >>> ");
-                String input = getInput();
-                if (input.equals("quit")) {
+                if (!loggedIn && !exit) {
+                    System.out.print("[LOGGED OUT] >>> ");
+                    input = getInput();
+                }
+            } else {
+                if (initialLogin) {
+                    System.out.print("[LOGGED IN] >>> ");
+                    input = getInput();
+                    initialLogin = false;
+                }
+
+                if (input != null && input.equals("quit")) {
                     exit = true;
                 } else {
                     loggedIn = postLogin.run(input, serverFacade);
+                    input = getInput();
+                }
+
+                if (!loggedIn) {
+                    initialLogin = true;
                 }
             }
         }

@@ -6,6 +6,7 @@ import model.handler.Games;
 import server.ServerFacade;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class PostLogin {
 
@@ -19,7 +20,12 @@ public class PostLogin {
         String[] parts = input.split(" ");
         if (parts.length == 2 && parts[0].equals("create")) { create(parts[1]); }
         else if (parts.length == 1 && parts[0].equals("list")) { list(); }
-        else if (parts.length == 3 && parts[0].equals("join")) { join(parts[1], parts[2]); }
+        else if (parts.length == 3 && parts[0].equals("join")) {
+            join(parts[1], parts[2]);
+            Scanner scanner = new Scanner(System.in);
+            InGameUi inGameUi = new InGameUi();
+            inGameUi.run(scanner.nextLine(), serverFacade);
+        }
         else if (parts.length == 2 && parts[0].equals("observe")) { observe(parts[1]); }
         else if (parts.length == 1 && parts[0].equals("logout")) { loggedIn = logout(); }
         else if (parts.length == 1 && parts[0].equals("help")) { help(); }
@@ -32,7 +38,20 @@ public class PostLogin {
         return loggedIn;
     }
 
+    private boolean inGameCheck() {
+        if (inGame) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.print("unsuccessful: try again");
+            System.out.println(EscapeSequences.RESET_TEXT_COLOR);
+            return true;
+        }
+        return false;
+    }
+
     private void create(String game) {
+        if (inGameCheck()) {
+            return;
+        }
         boolean created = false;
         Games gamesRecord = null;
 
@@ -69,10 +88,14 @@ public class PostLogin {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
             System.out.println("Created " + gameNumber + ") '" + game + "'");
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+            System.out.print("[LOGGED IN] >>> ");
         }
     }
 
     private void list() {
+        if (inGameCheck()) {
+            return;
+        }
         boolean listed = false;
         Games gamesRecord = null;
 
@@ -97,10 +120,14 @@ public class PostLogin {
                 gameNumber ++;
             }
             System.out.println(EscapeSequences.RESET_TEXT_COLOR);
+            System.out.print("[LOGGED IN] >>> ");
         }
     }
 
     private void join(String gameID, String playerColor) {
+        if (inGameCheck()) {
+            return;
+        }
         Integer game;
         try {
             game = Integer.parseInt(gameID);
@@ -132,6 +159,9 @@ public class PostLogin {
     }
 
     private void observe(String gameID) {
+        if (inGameCheck()) {
+            return;
+        }
         Integer game;
         try {
             game = Integer.parseInt(gameID);
@@ -165,6 +195,9 @@ public class PostLogin {
 
     private boolean logout() {
         boolean loggedIn = true;
+        if (inGameCheck()) {
+            return loggedIn;
+        }
 
         try {
             serverFacade.logout();
@@ -179,6 +212,7 @@ public class PostLogin {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
             System.out.println("Successful logout");
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+            System.out.print("[LOGGED OUT] >>> ");
         }
         return loggedIn;
     }
@@ -192,17 +226,18 @@ public class PostLogin {
             writeHelpText("logout", " - when you are done");
             writeHelpText("quit", " - playing chess");
             writeHelpText("help", " - with possible commands");
+            System.out.println(EscapeSequences.RESET_TEXT_COLOR);
+            System.out.print("[LOGGED IN] >>> ");
         } else {
             writeHelpText("redraw", " - chessboard");
             writeHelpText("leave", " - chess game");
             writeHelpText("move #,# to #,#", " - to make move");
             writeHelpText("resign", " - from chess game");
             writeHelpText("highlight", " - legal moves");
-            writeHelpText("logout", " - when you are done");
-            writeHelpText("quit", " - playing chess");
             writeHelpText("help", " - with possible commands");
+            System.out.println(EscapeSequences.RESET_TEXT_COLOR);
+            System.out.print("[IN GAME] >>> ");
         }
-        System.out.println(EscapeSequences.RESET_TEXT_COLOR);
     }
 
     private void writeHelpText(String command, String description) {
