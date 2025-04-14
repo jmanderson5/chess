@@ -50,7 +50,7 @@ public class InGameUi implements NotificationHandler {
             else if (parts.length == 1 && parts[0].equals("leave")) { leave(); }
             else if (parts.length == 5 && parts[0].equals("move")) { move(parts[1], parts[3], parts[4]); }
             else if (parts.length == 1 && parts[0].equals("resign")) { resign(); }
-            else if (parts.length == 1 && parts[0].equals("highlight")) { highlight(); }
+            else if (parts.length == 2 && parts[0].equals("highlight")) { highlight(parts[1]); }
             else if (parts.length == 1 && parts[0].equals("help")) { help(); }
             else if (!firstRun) {
                 System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
@@ -69,7 +69,7 @@ public class InGameUi implements NotificationHandler {
     }
 
     private void redraw() {
-        board.drawBoard(game, playerColor);
+        board.drawBoard(game, playerColor, false, null);
     }
 
     private void leave() {
@@ -135,7 +135,13 @@ public class InGameUi implements NotificationHandler {
     private void resign() {
     }
 
-    private void highlight() {
+    private void highlight(String selectedPiece) {
+        String[] piece = selectedPiece.split(",");
+
+        // get start position
+        int beginningRow = Integer.parseInt(piece[0]), beginningCol = getColNumber(piece[1]);
+        ChessPosition piecePosition = new ChessPosition(beginningRow, beginningCol);
+        board.drawBoard(game, playerColor, true, piecePosition);
     }
 
     private void help() {
@@ -143,7 +149,7 @@ public class InGameUi implements NotificationHandler {
         writeHelpText("leave", " - chess game");
         writeHelpText("move #,A to #,A [QUEEN|BISHOP|...|NULL}", " - to make move");
         writeHelpText("resign", " - from chess game");
-        writeHelpText("highlight", " - legal moves");
+        writeHelpText("highlight #,A", " - legal moves");
         writeHelpText("help", " - with possible commands");
         System.out.println(EscapeSequences.RESET_TEXT_COLOR);
     }
@@ -163,7 +169,7 @@ public class InGameUi implements NotificationHandler {
     @Override
     public void loadGame(LoadGameMessage serverMessage) {
         game = serverMessage.getGame().game().getBoard();
-        board.drawBoard(game, playerColor);
+        board.drawBoard(game, playerColor, false, null);
     }
 
     @Override
