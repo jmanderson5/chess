@@ -181,8 +181,13 @@ public class WebSocketHandler {
     private void resign(Integer gameID, String authToken, Session session) throws DataAccessException, IOException {
         String username = authDAO.getAuth(authToken).username();
         GameData game = gameDAO.getGameByID(gameID);
+        boolean isGameOver = game.game().isGameOver();
 
-        if (!verifyPlayer(game, username, session)) {
+        if (!verifyPlayer(game, username, session)) { return; }
+        if (isGameOver) {
+            String message = "Error: game is over. cannot resign";
+            ErrorMessage errorNotification = new ErrorMessage(message);
+            connections.directMessageError(session, errorNotification);
             return;
         }
 
