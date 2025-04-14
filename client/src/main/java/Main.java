@@ -4,7 +4,7 @@ import ui.UserInterface;
 public class Main {
 
     public static void main(String[] args) {
-        String url = "http://localhost:" + 8080;
+        String url = "http://localhost:" + 8081;
         ServerFacade serverFacade = new ServerFacade(url);
         System.out.println();
         System.out.println("👑 Welcome to chess. Type Help to start. 👑");

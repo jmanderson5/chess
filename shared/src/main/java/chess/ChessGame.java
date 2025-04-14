@@ -16,6 +16,16 @@ public class ChessGame {
     private ChessBoard board;
     private TeamColor teamTurn;
 
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        isGameOver = gameOver;
+    }
+
+    private boolean isGameOver;
+
     public ChessGame() {
         this.board = new ChessBoard();
         board.resetBoard();
@@ -130,6 +140,8 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPiece ogPiece = board.getPiece(move.getStartPosition());
         ChessPiece capturedPiece = board.getPiece((move.getEndPosition()));
+
+        if (isGameOver) { throw new InvalidMoveException("Game over. Cannot make move"); }
 
         if (board.getPiece(move.getStartPosition()) != null && canMakeMove(move) &&
                 board.getPiece(move.getStartPosition()).getTeamColor() == teamTurn) {

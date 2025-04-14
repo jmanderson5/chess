@@ -4,8 +4,8 @@ public class Main {
     public static void main(String[] args) {
         Server newServer = new Server();
 
-        newServer.run(0);
+        newServer.run(8081);
 
-        System.out.println("♕ 240 Chess Server: http://localhost:" + 8080);
+        System.out.println("♕ 240 Chess Server: http://localhost:" + 8081);
     }
 }

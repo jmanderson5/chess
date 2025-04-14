@@ -133,6 +133,25 @@ public class InGameUi implements NotificationHandler {
     }
 
     private void resign() {
+        try {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
+            System.out.print("RESIGNATION CONFIRMATION: ");
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.print("please type ");
+            System.out.print(EscapeSequences.SET_TEXT_ITALIC);
+            System.out.print("CONFIRM ");
+            System.out.print(EscapeSequences.RESET_TEXT_ITALIC);
+            System.out.println("to confirm");
+            System.out.print("[CONFIRM] >>> ");
+            getInput();
+            if (input.equals("CONFIRM")) {
+                ws.resign(gameID);
+            }
+        } catch (Exception e) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Error: " + e.getMessage());
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        }
     }
 
     private void highlight(String selectedPiece) {

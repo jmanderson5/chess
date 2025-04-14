@@ -75,6 +75,15 @@ public class WebsocketCommunicator extends Endpoint {
         }
     }
 
+    public void resign(Integer gameID) throws ResponseException {
+        try {
+            UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
     public void makeMove(Integer gameID, ChessMove move) throws ResponseException {
         try {
             MakeMoveCommand command = new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE,

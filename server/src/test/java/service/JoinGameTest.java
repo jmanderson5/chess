@@ -35,6 +35,7 @@ public class JoinGameTest {
                 "gameName", game);
 
         assertEquals(referenceGame, gameDAO.getGame("gameName"));
+        gameDAO.clearGameData();
     }
 
     @Test

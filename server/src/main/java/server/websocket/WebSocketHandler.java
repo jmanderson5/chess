@@ -56,11 +56,11 @@ public class WebSocketHandler {
             String message;
             String username = authDAO.getAuth(authToken).username();
             if (game.blackUsername().equals(username)) {
-                message = String.format("%s joined the game as %s", username, "BLACK");
+                message = String.format("%s joined the game as BLACK", username);
             } else if (game.whiteUsername().equals(username)) {
-                message = String.format("%s joined the game as %s", username, "WHITE");
+                message = String.format("%s joined the game as WHITE", username);
             } else {
-                message = String.format("%s joined the game as %s", username, "OBSERVER");
+                message = String.format("%s joined the game as OBSERVER", username);
             }
             NotificationMessage notification = new NotificationMessage(message);
             connections.broadcast(gameID, authDAO.getAuth(authToken).username(), notification);
@@ -186,9 +186,12 @@ public class WebSocketHandler {
             return;
         }
 
-        // remove players from game
-        String usernames = null;
-        GameData newGame = new GameData(game.gameID(), usernames, usernames, game.gameName(), game.game());
+        // set gameOver
+        game.game().setGameOver(true);
+
+        // update game
+        GameData newGame = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(),
+                game.gameName(), game.game());
         gameDAO.updateGame(newGame, "whiteUsername");
         gameDAO.updateGame(newGame, "blackUsername");
 
@@ -203,7 +206,7 @@ public class WebSocketHandler {
         if (username.equals(game.whiteUsername()) || username.equals(game.blackUsername())) {
             return true;
         } else {
-            String message = String.format("Error: %s is not a player. cannot resign", username);
+            String message = String.format("Error: you, %s, are not a player. cannot resign", username);
             ErrorMessage errorNotification = new ErrorMessage(message);
             connections.directMessageError(session, errorNotification);
             return false;
