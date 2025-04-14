@@ -6,7 +6,6 @@ import model.handler.Games;
 import server.ServerFacade;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class PostLogin {
 
@@ -29,6 +28,7 @@ public class PostLogin {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
             System.out.print("unsuccessful: try again");
             System.out.println(EscapeSequences.RESET_TEXT_COLOR);
+            System.out.print("[LOGGED IN] >>> ");
         }
 
         return loggedIn;
@@ -105,6 +105,7 @@ public class PostLogin {
     }
 
     private void join(String gameID, String playerColor) {
+        boolean joinedGame = false;
         Integer game;
         try {
             game = Integer.parseInt(gameID);
@@ -126,17 +127,26 @@ public class PostLogin {
                     serverFacade.joinGame(playerColor, gameData.gameID());
                     // enter InGameUi
                     new InGameUi(url).run(serverFacade.getAuth(), gameData.gameID(), playerColor);
+                    joinedGame = true;
                 }
-                gameNumber ++;
+                gameNumber++;
             }
         } catch (ResponseException e) {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
             System.out.println(e.getMessage());
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
         }
+
+        if (!joinedGame) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Error: game does not exist");
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+            System.out.print("[LOGGED IN] >>> ");
+        }
     }
 
     private void observe(String gameID) {
+        boolean joinedGame = false;
         Integer game;
 
         try {
@@ -158,6 +168,7 @@ public class PostLogin {
                 if (gameNumber.equals(game)) {
                     // enter InGameUi
                     new InGameUi(url).run(serverFacade.getAuth(), gameData.gameID(), "WHITE");
+                    joinedGame = true;
                 }
                 gameNumber ++;
             }
@@ -165,6 +176,13 @@ public class PostLogin {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
             System.out.println(e.getMessage());
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        }
+
+        if (!joinedGame) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Error: game does not exist");
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+            System.out.print("[LOGGED IN] >>> ");
         }
     }
 

@@ -24,8 +24,8 @@ import java.util.Objects;
 public class WebSocketHandler {
 
     private final ConnectionManager connections = new ConnectionManager();
-    private GameDAO gameDAO;
-    private AuthDAO authDAO;
+    private final GameDAO gameDAO;
+    private final AuthDAO authDAO;
 
     public WebSocketHandler(GameDAO gameDAO, AuthDAO authDAO) {
         this.gameDAO = gameDAO;
@@ -53,7 +53,15 @@ public class WebSocketHandler {
                 throw new DataAccessException("Unauthorized");
             }
             connections.add(gameID, authDAO.getAuth(authToken).username(), session);
-            String message = String.format("%s join the game as %s", authDAO.getAuth(authToken).username(), authToken);
+            String message;
+            String username = authDAO.getAuth(authToken).username();
+            if (game.blackUsername().equals(username)) {
+                message = String.format("%s joined the game as %s", username, "BLACK");
+            } else if (game.whiteUsername().equals(username)) {
+                message = String.format("%s joined the game as %s", username, "WHITE");
+            } else {
+                message = String.format("%s joined the game as %s", username, "OBSERVER");
+            }
             NotificationMessage notification = new NotificationMessage(message);
             connections.broadcast(gameID, authDAO.getAuth(authToken).username(), notification);
         } catch (DataAccessException | IOException e) {

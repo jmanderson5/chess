@@ -1,12 +1,11 @@
 package server;
 
-import chess.ChessBoard;
 import chess.ChessMove;
 import com.google.gson.Gson;
 import exception.ResponseException;
-import ui.Board;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
@@ -43,9 +42,12 @@ public class WebsocketCommunicator extends Endpoint {
                 public void onMessage(String message) {
                     ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
                     switch (serverMessage.getServerMessageType()) {
-                        case LOAD_GAME -> notificationHandler.loadGame(new Gson().fromJson(message, LoadGameMessage.class));
-                        case ERROR -> notificationHandler.error();
-                        case NOTIFICATION -> notificationHandler.notification();
+                        case LOAD_GAME -> notificationHandler.loadGame(new Gson().fromJson(message,
+                                LoadGameMessage.class));
+                        case ERROR -> notificationHandler.error(new Gson().fromJson(message,
+                                ErrorMessage.class));
+                        case NOTIFICATION -> notificationHandler.notification(new Gson().fromJson(message,
+                                NotificationMessage.class));
                     }
                 }
             });

@@ -5,11 +5,11 @@ import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import exception.ResponseException;
-import model.GameData;
 import server.NotificationHandler;
-import server.ServerFacade;
 import server.WebsocketCommunicator;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 
 import java.util.Scanner;
 
@@ -167,12 +167,16 @@ public class InGameUi implements NotificationHandler {
     }
 
     @Override
-    public void error() {
-
+    public void error(ErrorMessage message) {
+        System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+        System.out.println(message.getMessage());
+        System.out.print(EscapeSequences.RESET_TEXT_COLOR);
     }
 
     @Override
-    public void notification() {
-
+    public void notification(NotificationMessage message) {
+        System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+        System.out.println(message.getMessage());
+        System.out.print(EscapeSequences.RESET_TEXT_COLOR);
     }
 }

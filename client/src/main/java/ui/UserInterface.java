@@ -50,7 +50,7 @@ public class UserInterface {
 
         System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
         System.out.println("quit");
-        System.out.println(EscapeSequences.RESET_TEXT_COLOR);
+        System.out.print(EscapeSequences.RESET_TEXT_COLOR);
     }
 
     private String getInput() {
