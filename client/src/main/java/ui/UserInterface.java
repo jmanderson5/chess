@@ -9,13 +9,12 @@ public class UserInterface {
     private boolean loggedIn = false;
     private boolean exit = false;
     private boolean initialLogin = true;
-    String input = null;
 
-    public void run(ServerFacade serverFacade) {
+    public void run(ServerFacade serverFacade, String url) {
         PreLogin preLogin = new PreLogin();
         PostLogin postLogin = new PostLogin();
         System.out.print("[LOGGED OUT] >>> ");
-        input = getInput();
+        String input = getInput();
 
         while (!exit) {
             if (!loggedIn) {
@@ -39,7 +38,7 @@ public class UserInterface {
                     exit = true;
                 } else {
                     assert input != null;
-                    loggedIn = postLogin.run(input, serverFacade);
+                    loggedIn = postLogin.run(input, serverFacade, url);
                     input = getInput();
                 }
 

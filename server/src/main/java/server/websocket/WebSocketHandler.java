@@ -101,7 +101,7 @@ public class WebSocketHandler {
             }
 
             // send updated board
-            LoadGameMessage newBoard = new LoadGameMessage(game);
+            LoadGameMessage newBoard = new LoadGameMessage(gameDAO.getGameByID(gameID));
             connections.broadcast(gameID, username, newBoard);
             connections.directMessage(gameID, username, newBoard);
 

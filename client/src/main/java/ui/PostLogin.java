@@ -3,7 +3,6 @@ package ui;
 import exception.ResponseException;
 import model.handler.GameDataShort;
 import model.handler.Games;
-import server.NotificationHandler;
 import server.ServerFacade;
 
 import java.util.List;
@@ -12,10 +11,12 @@ import java.util.Scanner;
 public class PostLogin {
 
     private ServerFacade serverFacade;
+    private String url;
 
-    public boolean run(String input, ServerFacade serverFacade) {
+    public boolean run(String input, ServerFacade serverFacade, String url) {
         this.serverFacade = serverFacade;
         boolean loggedIn = true;
+        this.url = url;
 
         String[] parts = input.split(" ");
         if (parts.length == 2 && parts[0].equals("create")) { create(parts[1]); }
@@ -124,12 +125,7 @@ public class PostLogin {
                 if (gameNumber.equals(game)) {
                     serverFacade.joinGame(playerColor, gameData.gameID());
                     // enter InGameUi
-                    System.out.println("[IN GAME]");
-                    System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
-                    System.out.println("type help for in game commands");
-                    System.out.print(EscapeSequences.RESET_TEXT_COLOR);
-                    Scanner scanner = new Scanner(System.in);
-                    new InGameUi().run(scanner.nextLine(), serverFacade, gameData.gameID(), playerColor);
+                    new InGameUi(url).run(serverFacade.getAuth(), gameData.gameID(), playerColor);
                 }
                 gameNumber ++;
             }
@@ -160,15 +156,8 @@ public class PostLogin {
             Integer gameNumber = 1;
             for (GameDataShort gameData : games) {
                 if (gameNumber.equals(game)) {
-                    serverFacade.observeGame(gameData.gameID());
                     // enter InGameUi
-                    System.out.println("[IN GAME]");
-                    System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
-                    System.out.println("type help for in game commands");
-                    System.out.print(EscapeSequences.RESET_TEXT_COLOR);
-                    Scanner scanner = new Scanner(System.in);
-                    InGameUi inGameUi = new InGameUi();
-                    inGameUi.run(scanner.nextLine(), serverFacade, gameData.gameID(), "WHITE");
+                    new InGameUi(url).run(serverFacade.getAuth(), gameData.gameID(), "WHITE");
                 }
                 gameNumber ++;
             }

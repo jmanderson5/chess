@@ -1,8 +1,6 @@
 package server;
 
-import chess.ChessMove;
 import exception.ResponseException;
-import model.GameData;
 import model.UserData;
 import model.handler.*;
 
@@ -11,16 +9,14 @@ public class ServerFacade {
     private final String serverUrl;
     private String authToken;
     private HttpCommunicator httpCommunicator;
-    private WebsocketCommunicator websocketCommunicator;
+
+    public String getAuth() {
+        return authToken;
+    }
 
     public ServerFacade(String url) {
         this.serverUrl = url;
         httpCommunicator = new HttpCommunicator(serverUrl);
-        try {
-            websocketCommunicator = new WebsocketCommunicator(serverUrl, websocketCommunicator);
-        } catch (ResponseException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public AuthResponse register(UserData user) throws ResponseException {
@@ -65,26 +61,8 @@ public class ServerFacade {
     public void joinGame(String userColor, Integer gameID) throws ResponseException {
         var path = "/game";
         httpCommunicator.makeRequest("PUT", path, new JoinGameData(userColor, gameID), null);
-        var dataPath = "/data";
-        // connect to WebSocket
-        websocketCommunicator.setAuthToken(authToken);
-        websocketCommunicator.connect(gameID, userColor);
-    }
-
-    public void observeGame(Integer gameID) throws ResponseException {
-        websocketCommunicator.setAuthToken(authToken);
-        websocketCommunicator.connect(gameID, "WHITE");
-    }
-
-    public void redraw(Integer gameID, String playerColor) throws ResponseException {
-        websocketCommunicator.connect(gameID, playerColor);
-    }
-
-    public void leave(Integer gameID) throws ResponseException {
-        websocketCommunicator.disconnect(gameID);
-    }
-
-    public void makeMove(Integer gameID, ChessMove move) throws ResponseException {
-        websocketCommunicator.makeMove(gameID, move);
+//        // connect to WebSocket
+//        ws.setAuthToken(authToken);
+//        ws.connect(gameID, userColor);
     }
 }

@@ -8,6 +8,7 @@ import exception.ResponseException;
 import model.GameData;
 import server.NotificationHandler;
 import server.ServerFacade;
+import server.WebsocketCommunicator;
 import websocket.messages.LoadGameMessage;
 
 import java.util.Scanner;
@@ -15,22 +16,33 @@ import java.util.Scanner;
 public class InGameUi implements NotificationHandler {
 
     private boolean inGame = true;
+    private boolean firstRun = true;
     private String input;
-    private ServerFacade serverFacade;
-    Integer gameID;
-    String playerColor;
-    NotificationHandler notificationHandler;
+    private Integer gameID;
+    private String playerColor;
+    private WebsocketCommunicator ws;
+    private final Board board = new Board();
+    private ChessBoard game;
 
-    public InGameUi() {
-        this.notificationHandler = this;
+    public InGameUi(String url) {
+        try {
+            ws = new WebsocketCommunicator(url, this);
+        } catch (ResponseException e) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Error: " + e.getMessage());
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        }
     }
 
-    public void run(String input, ServerFacade serverFacade, Integer gameID, String playerColor)
+    public void run(String auth, Integer gameID, String playerColor)
             throws ResponseException {
-        this.input = input;
-        this.serverFacade = serverFacade;
+        this.input = "join # [WHITE|BLACK]";
         this.gameID = gameID;
         this.playerColor = playerColor;
+
+        // connect to WebSocket
+        ws.setAuthToken(auth);
+        ws.connect(gameID, playerColor);
 
         while (inGame) {
             String[] parts = this.input.split(" ");
@@ -40,10 +52,15 @@ public class InGameUi implements NotificationHandler {
             else if (parts.length == 1 && parts[0].equals("resign")) { resign(); }
             else if (parts.length == 1 && parts[0].equals("highlight")) { highlight(); }
             else if (parts.length == 1 && parts[0].equals("help")) { help(); }
-            else {
+            else if (!firstRun) {
                 System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
                 System.out.print("unsuccessful: try again");
                 System.out.println(EscapeSequences.RESET_TEXT_COLOR);
+            } else {
+                System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+                System.out.println("type help for in game commands");
+                System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+                firstRun = false;
             }
             if (inGame) {
                 getInput();
@@ -52,21 +69,15 @@ public class InGameUi implements NotificationHandler {
     }
 
     private void redraw() {
-        try {
-            serverFacade.redraw(gameID, playerColor);
-        } catch (ResponseException e) {
-            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
-            System.out.println("Error: " + e.getMessage());
-            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
-        }
+        board.drawBoard(game, playerColor);
     }
 
     private void leave() {
         try {
-            serverFacade.leave(gameID);
+            ws.disconnect(gameID);
             inGame = false;
             System.out.print("[LOGGED IN] >>> ");
-        } catch (ResponseException e) {
+        } catch (Exception e) {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
             System.out.println("Error: " + e.getMessage());
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
@@ -76,9 +87,6 @@ public class InGameUi implements NotificationHandler {
     private void move(String beginning, String end, String promotionPiece) {
         String[] newBeginning = beginning.split(",");
         String[] newEnd = end.split(",");
-
-        // get game
-        GameData game;
 
         // get start position
         int beginningRow = Integer.parseInt(newBeginning[0]), beginningCol = getColNumber(newBeginning[1]);
@@ -91,9 +99,8 @@ public class InGameUi implements NotificationHandler {
 
         try {
             ChessMove move = new ChessMove(startPosition, endPosition, pieceType);
-            serverFacade.makeMove(gameID, move);
-            redraw();
-        } catch (ResponseException e) {
+            ws.makeMove(gameID, move);
+        } catch (Exception e) {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
             System.out.println("Error: " + e.getMessage());
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
@@ -155,8 +162,7 @@ public class InGameUi implements NotificationHandler {
 
     @Override
     public void loadGame(LoadGameMessage serverMessage) {
-        Board board = new Board();
-        ChessBoard game = serverMessage.getGame().game().getBoard();
+        game = serverMessage.getGame().game().getBoard();
         board.drawBoard(game, playerColor);
     }
 
