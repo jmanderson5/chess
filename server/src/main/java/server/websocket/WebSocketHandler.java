@@ -127,8 +127,14 @@ public class WebSocketHandler {
             game = gameDAO.getGameByID(gameID);
             if (Objects.equals(game.whiteUsername(), username)) {
                 if (game.game().isInCheckmate(ChessGame.TeamColor.BLACK)) { // checkmate?
-                    checkmate(game, gameID, username, game.whiteUsername());
+                    sendCheckmate(game, gameID, username, game.blackUsername());
                 } else if (game.game().isInCheck(ChessGame.TeamColor.BLACK)) { // check?
+                    sendCheckMessage(gameID, username, game.blackUsername());
+                }
+            } else if (Objects.equals(game.blackUsername(), username)) {
+                if (game.game().isInCheckmate(ChessGame.TeamColor.WHITE)) { // checkmate?
+                    sendCheckmate(game, gameID, username, game.whiteUsername());
+                } else if (game.game().isInCheck(ChessGame.TeamColor.WHITE)) { // check?
                     sendCheckMessage(gameID, username, game.whiteUsername());
                 }
             }
@@ -140,7 +146,7 @@ public class WebSocketHandler {
         }
     }
 
-    private void checkmate(GameData game, Integer gameID, String username, String userInCheckmate)
+    private void sendCheckmate(GameData game, Integer gameID, String username, String userInCheckmate)
             throws DataAccessException, IOException {
         // send notification
         String message = String.format("%s is in checkmate. %s wins!", userInCheckmate, username);
