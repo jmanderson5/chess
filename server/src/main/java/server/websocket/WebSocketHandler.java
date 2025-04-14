@@ -55,9 +55,9 @@ public class WebSocketHandler {
             connections.add(gameID, authDAO.getAuth(authToken).username(), session);
             String message;
             String username = authDAO.getAuth(authToken).username();
-            if (game.blackUsername().equals(username)) {
+            if (game.blackUsername() != null && game.blackUsername().equals(username)) {
                 message = String.format("%s joined the game as BLACK", username);
-            } else if (game.whiteUsername().equals(username)) {
+            } else if (game.whiteUsername() != null && game.whiteUsername().equals(username)) {
                 message = String.format("%s joined the game as WHITE", username);
             } else {
                 message = String.format("%s joined the game as OBSERVER", username);
@@ -114,15 +114,67 @@ public class WebSocketHandler {
             connections.directMessage(gameID, username, newBoard);
 
             // send notification
-            String message = String.format("%s made a move", username);
+            Integer row1 = move.getStartPosition().getRow();
+            Integer col1 = move.getEndPosition().getColumn();
+            Integer row2 = move.getEndPosition().getRow();
+            Integer col2 = move.getEndPosition().getColumn();
+            String message = String.format("%s made a move from %s,%d to %s,%d", username,
+                    getColLetter(col1), row1, getColLetter(col2), row2);
             NotificationMessage notification = new NotificationMessage(message);
             connections.broadcast(gameID, username, notification);
+
+            // game in checkmate or check?
+            game = gameDAO.getGameByID(gameID);
+            if (Objects.equals(game.whiteUsername(), username)) {
+                if (game.game().isInCheckmate(ChessGame.TeamColor.BLACK)) { // checkmate?
+                    checkmate(game, gameID, username, game.whiteUsername());
+                } else if (game.game().isInCheck(ChessGame.TeamColor.BLACK)) { // check?
+                    sendCheckMessage(gameID, username, game.whiteUsername());
+                }
+            }
 
         } catch (DataAccessException | InvalidMoveException | java.io.IOException e) {
             String message = String.format("Error: %s", e.getMessage());
             ErrorMessage errorNotification = new ErrorMessage(message);
             connections.directMessageError(session, errorNotification);
         }
+    }
+
+    private void checkmate(GameData game, Integer gameID, String username, String userInCheckmate)
+            throws DataAccessException, IOException {
+        // send notification
+        String message = String.format("%s is in checkmate. %s wins!", userInCheckmate, username);
+        NotificationMessage notification = new NotificationMessage(message);
+        connections.broadcast(gameID, username, notification);
+        connections.directMessage(gameID, username, notification);
+        // update game
+        game.game().setGameOver(true);
+        GameData newGame = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(),
+                game.gameName(), game.game());
+        gameDAO.updateGame(newGame, "blackUsername");
+    }
+
+    private void sendCheckMessage(Integer gameID, String username, String userInCheck)
+            throws IOException, DataAccessException {
+        // send notification
+        String message = String.format("%s is in check", userInCheck);
+        NotificationMessage notification = new NotificationMessage(message);
+        connections.broadcast(gameID, username, notification);
+        connections.directMessage(gameID, username, notification);
+    }
+
+    private String getColLetter(Integer numberCol) {
+        return switch (numberCol) {
+            case 8 -> "A";
+            case 7 -> "B";
+            case 6 -> "C";
+            case 5 -> "D";
+            case 4 -> "E";
+            case 3 -> "F";
+            case 2 -> "G";
+            case 1 -> "H";
+            default -> throw new IllegalStateException("Unexpected value: " + numberCol);
+        };
     }
 
     private boolean verifyPlayerTurn(GameData game, String username, Session session) throws IOException {
