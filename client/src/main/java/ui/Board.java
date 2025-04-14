@@ -71,23 +71,8 @@ public class Board {
         System.out.print(" " + row + " ");
 
         for (int i = 8; i >= 1; i--) {
-            if (i % 2 == 0) {
-                if (moves) {
-                    ChessPosition chessPiece = new ChessPosition(row, i);
-                    movesDarkGreen(chessBoard, row, i, chessPiece);
-                } else {
-                    System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-                    drawPiece(row, i, chessBoard);
-                }
-            } else {
-                if (moves) {
-                    ChessPosition chessPiece = new ChessPosition(row, i);
-                    movesLightGreen(chessBoard, row, i, chessPiece);
-                } else {
-                    System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-                    drawPiece(row, i, chessBoard);
-                }
-            }
+            drawRowHelper(row, i, chessBoard, EscapeSequences.SET_BG_COLOR_DARK_GREY,
+                    EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
         }
 
         System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
@@ -95,39 +80,37 @@ public class Board {
         System.out.println(EscapeSequences.RESET_BG_COLOR);
     }
 
-    private void movesLightGreen(ChessBoard board, Integer row, int col, ChessPosition chessPiece) {
-        boolean pieceDrawn = false;
-
-        for (ChessMove move : legalMoves) {
-            if (pieceDrawn) { break; }
-
-            if (chessPiece.equals(move.getEndPosition())) {
-                System.out.print(EscapeSequences.SET_BG_COLOR_GREEN);
-                drawPiece(row, col, board);
-                pieceDrawn = true;
-            } else if (chessPiece.equals(piecePosition)) {
-                System.out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
-                System.out.print(EscapeSequences.SET_TEXT_COLOR_BLACK);
-                drawPiece(row, col, board);
-                System.out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
-                pieceDrawn = true;
+    private void drawRowHelper(int row, int col, ChessBoard chessBoard, String color1, String color2) {
+        if (col % 2 == 0) {
+            if (moves) {
+                ChessPosition chessPiece = new ChessPosition(row, col);
+                drawMoves(chessBoard, row, col, chessPiece, EscapeSequences.SET_BG_COLOR_DARK_GREY,
+                        EscapeSequences.SET_BG_COLOR_DARK_GREEN);
+            } else {
+                System.out.print(color1);
+                drawPiece(row, col, chessBoard);
             }
-        }
-
-        if (!pieceDrawn) {
-            System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-            drawPiece(row, col, board);
+        } else {
+            if (moves) {
+                ChessPosition chessPiece = new ChessPosition(row, col);
+                drawMoves(chessBoard, row, col, chessPiece, EscapeSequences.SET_BG_COLOR_LIGHT_GREY,
+                        EscapeSequences.SET_BG_COLOR_GREEN);
+            } else {
+                System.out.print(color2);
+                drawPiece(row, col, chessBoard);
+            }
         }
     }
 
-    private void movesDarkGreen(ChessBoard board, int row, int col, ChessPosition chessPiece) {
+    private void drawMoves(ChessBoard board, Integer row, int col, ChessPosition chessPiece,
+                                 String grayHugh, String greenHugh) {
         boolean pieceDrawn = false;
 
         for (ChessMove move : legalMoves) {
             if (pieceDrawn) { break; }
 
             if (chessPiece.equals(move.getEndPosition())) {
-                System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREEN);
+                System.out.print(greenHugh);
                 drawPiece(row, col, board);
                 pieceDrawn = true;
             } else if (chessPiece.equals(piecePosition)) {
@@ -140,7 +123,7 @@ public class Board {
         }
 
         if (!pieceDrawn) {
-            System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+            System.out.print(grayHugh);
             drawPiece(row, col, board);
         }
     }
@@ -150,23 +133,8 @@ public class Board {
         System.out.print(" " + row + " ");
 
         for (int i = 8; i >= 1; i--) {
-            if (i % 2 == 0) {
-                if (moves) {
-                    ChessPosition chessPiece = new ChessPosition(row, i);
-                    movesLightGreen(chessBoard, row, i, chessPiece);
-                } else {
-                    System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-                    drawPiece(row, i, chessBoard);
-                }
-            } else {
-                if (moves) {
-                    ChessPosition chessPiece = new ChessPosition(row, i);
-                    movesDarkGreen(chessBoard, row, i, chessPiece);
-                } else {
-                    System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-                    drawPiece(row, i, chessBoard);
-                }
-            }
+            drawRowHelper(row, i, chessBoard, EscapeSequences.SET_BG_COLOR_LIGHT_GREY,
+                    EscapeSequences.SET_BG_COLOR_DARK_GREY);
         }
 
         System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
@@ -218,7 +186,8 @@ public class Board {
             if (i % 2 == 1) {
                 if (moves) {
                     ChessPosition chessPiece = new ChessPosition(row, i);
-                    movesDarkGreen(chessBoard, row, i, chessPiece);
+                    drawMoves(chessBoard, row, i, chessPiece, EscapeSequences.SET_BG_COLOR_DARK_GREY,
+                            EscapeSequences.SET_BG_COLOR_DARK_GREEN);
                 } else {
                     System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
                     drawPiece(row, i, chessBoard);
@@ -226,7 +195,8 @@ public class Board {
             } else {
                 if (moves) {
                     ChessPosition chessPiece = new ChessPosition(row, i);
-                    movesLightGreen(chessBoard, row, i, chessPiece);
+                    drawMoves(chessBoard, row, i, chessPiece, EscapeSequences.SET_BG_COLOR_LIGHT_GREY,
+                            EscapeSequences.SET_BG_COLOR_GREEN);
                 } else {
                     System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
                     drawPiece(row, i, chessBoard);
@@ -247,7 +217,8 @@ public class Board {
             if (i % 2 == 1) {
                 if (moves) {
                     ChessPosition chessPiece = new ChessPosition(row, i);
-                    movesLightGreen(chessBoard, row, i, chessPiece);
+                    drawMoves(chessBoard, row, i, chessPiece, EscapeSequences.SET_BG_COLOR_LIGHT_GREY,
+                            EscapeSequences.SET_BG_COLOR_DARK_GREEN);
                 } else {
                     System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
                     drawPiece(row, i, chessBoard);
@@ -255,7 +226,8 @@ public class Board {
             } else {
                 if (moves) {
                     ChessPosition chessPiece = new ChessPosition(row, i);
-                    movesDarkGreen(chessBoard, row, i, chessPiece);
+                    drawMoves(chessBoard, row, i, chessPiece, EscapeSequences.SET_BG_COLOR_DARK_GREY,
+                            EscapeSequences.SET_BG_COLOR_GREEN);
                 } else {
                     System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
                     drawPiece(row, i, chessBoard);

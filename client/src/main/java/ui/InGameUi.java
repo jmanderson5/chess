@@ -88,16 +88,16 @@ public class InGameUi implements NotificationHandler {
         String[] newBeginning = beginning.split(",");
         String[] newEnd = end.split(",");
 
-        // get start position
-        int beginningRow = Integer.parseInt(newBeginning[0]), beginningCol = getColNumber(newBeginning[1]);
-        ChessPosition startPosition = new ChessPosition(beginningRow, beginningCol);
-        // get end position
-        int endRow = Integer.parseInt(newEnd[0]), endCol = getColNumber(newEnd[1]);
-        ChessPosition endPosition = new ChessPosition(endRow, endCol);
-        // get promotion piece
-        ChessPiece.PieceType pieceType = getPieceType(promotionPiece);
-
         try {
+            // get start position
+            int beginningRow = Integer.parseInt(newBeginning[0]), beginningCol = getColNumber(newBeginning[1]);
+            ChessPosition startPosition = new ChessPosition(beginningRow, beginningCol);
+            // get end position
+            int endRow = Integer.parseInt(newEnd[0]), endCol = getColNumber(newEnd[1]);
+            ChessPosition endPosition = new ChessPosition(endRow, endCol);
+            // get promotion piece
+            ChessPiece.PieceType pieceType = getPieceType(promotionPiece);
+
             ChessMove move = new ChessMove(startPosition, endPosition, pieceType);
             ws.makeMove(gameID, move);
         } catch (Exception e) {
@@ -107,8 +107,8 @@ public class InGameUi implements NotificationHandler {
         }
     }
 
-    private int getColNumber(String LetterCol) {
-        return switch (LetterCol) {
+    private int getColNumber(String letterCol) {
+        return switch (letterCol) {
             case "A" -> 8;
             case "B" -> 7;
             case "C" -> 6;
@@ -117,7 +117,7 @@ public class InGameUi implements NotificationHandler {
             case "F" -> 3;
             case "G" -> 2;
             case "H" -> 1;
-            default -> throw new IllegalStateException("Unexpected value: " + LetterCol);
+            default -> throw new IllegalStateException("Unexpected value: " + letterCol);
         };
     }
 
@@ -157,10 +157,16 @@ public class InGameUi implements NotificationHandler {
     private void highlight(String selectedPiece) {
         String[] piece = selectedPiece.split(",");
 
-        // get start position
-        int beginningRow = Integer.parseInt(piece[0]), beginningCol = getColNumber(piece[1]);
-        ChessPosition piecePosition = new ChessPosition(beginningRow, beginningCol);
-        board.drawBoard(game, playerColor, true, piecePosition);
+        try {
+            // get start position
+            int beginningRow = Integer.parseInt(piece[0]), beginningCol = getColNumber(piece[1]);
+            ChessPosition piecePosition = new ChessPosition(beginningRow, beginningCol);
+            board.drawBoard(game, playerColor, true, piecePosition);
+        } catch (Exception e) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Error: " + e.getMessage());
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        }
     }
 
     private void help() {
