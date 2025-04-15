@@ -171,14 +171,14 @@ public class WebSocketHandler {
 
     private String getColLetter(Integer numberCol) {
         return switch (numberCol) {
-            case 8 -> "A";
-            case 7 -> "B";
-            case 6 -> "C";
-            case 5 -> "D";
-            case 4 -> "E";
-            case 3 -> "F";
-            case 2 -> "G";
-            case 1 -> "H";
+            case 8 -> "H";
+            case 7 -> "G";
+            case 6 -> "F";
+            case 5 -> "E";
+            case 4 -> "D";
+            case 3 -> "C";
+            case 2 -> "B";
+            case 1 -> "A";
             default -> throw new IllegalStateException("Unexpected value: " + numberCol);
         };
     }

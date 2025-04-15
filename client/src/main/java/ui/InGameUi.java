@@ -88,18 +88,29 @@ public class InGameUi implements NotificationHandler {
         String[] newBeginning = beginning.split(",");
         String[] newEnd = end.split(",");
 
+        if (newBeginning.length != 2 && newEnd.length != 2) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Error: invalid input");
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+            return;
+        }
+
         try {
             // get start position
-            int beginningRow = Integer.parseInt(newBeginning[0]), beginningCol = getColNumber(newBeginning[1]);
+            int beginningRow = Integer.parseInt(newBeginning[1]), beginningCol = getColNumber(newBeginning[0]);
             ChessPosition startPosition = new ChessPosition(beginningRow, beginningCol);
             // get end position
-            int endRow = Integer.parseInt(newEnd[0]), endCol = getColNumber(newEnd[1]);
+            int endRow = Integer.parseInt(newEnd[1]), endCol = getColNumber(newEnd[0]);
             ChessPosition endPosition = new ChessPosition(endRow, endCol);
             // get promotion piece
             ChessPiece.PieceType pieceType = getPieceType(promotionPiece);
 
             ChessMove move = new ChessMove(startPosition, endPosition, pieceType);
             ws.makeMove(gameID, move);
+        } catch (NumberFormatException ex) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Error: invalid input");
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
         } catch (Exception e) {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
             System.out.println("Error: " + e.getMessage());
@@ -109,14 +120,14 @@ public class InGameUi implements NotificationHandler {
 
     private int getColNumber(String letterCol) {
         return switch (letterCol) {
-            case "A" -> 8;
-            case "B" -> 7;
-            case "C" -> 6;
-            case "D" -> 5;
-            case "E" -> 4;
-            case "F" -> 3;
-            case "G" -> 2;
-            case "H" -> 1;
+            case "A" -> 1;
+            case "B" -> 2;
+            case "C" -> 3;
+            case "D" -> 4;
+            case "E" -> 5;
+            case "F" -> 6;
+            case "G" -> 7;
+            case "H" -> 8;
             default -> throw new IllegalStateException("Unexpected value: " + letterCol);
         };
     }
@@ -157,11 +168,22 @@ public class InGameUi implements NotificationHandler {
     private void highlight(String selectedPiece) {
         String[] piece = selectedPiece.split(",");
 
+        if (piece.length != 2) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Error: invalid input");
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+            return;
+        }
+
         try {
             // get start position
-            int beginningRow = Integer.parseInt(piece[0]), beginningCol = getColNumber(piece[1]);
+            int beginningRow = Integer.parseInt(piece[1]), beginningCol = getColNumber(piece[0]);
             ChessPosition piecePosition = new ChessPosition(beginningRow, beginningCol);
             board.drawBoard(game, playerColor, true, piecePosition);
+        } catch (NumberFormatException ex) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+            System.out.println("Error: invalid input");
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
         } catch (Exception e) {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_MAGENTA);
             System.out.println("Error: " + e.getMessage());
@@ -172,9 +194,9 @@ public class InGameUi implements NotificationHandler {
     private void help() {
         writeHelpText("redraw", " - chessboard");
         writeHelpText("leave", " - chess game");
-        writeHelpText("move #,A to #,A [QUEEN|BISHOP|...|NULL}", " - to make move");
+        writeHelpText("move A,# to A,# [QUEEN|BISHOP|...|NULL}", " - to make move");
         writeHelpText("resign", " - from chess game");
-        writeHelpText("highlight #,A", " - legal moves");
+        writeHelpText("highlight A,#", " - legal moves");
         writeHelpText("help", " - with possible commands");
         System.out.println(EscapeSequences.RESET_TEXT_COLOR);
     }
